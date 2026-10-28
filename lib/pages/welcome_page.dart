@@ -9,7 +9,7 @@ class WelcomePage extends StatelessWidget {
   static const _orange = Color(0xFFC9502B);
 
   // Imagen local para que la pantalla no dependa de conexión a Internet.
-  static const _backgroundImage = 'lib/images/home_bg.jpg';
+  static const _backgroundImage = 'assets/images/home_bg.jpg';
 
   @override
   Widget build(BuildContext context) {
