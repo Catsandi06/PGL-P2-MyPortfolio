@@ -3,14 +3,14 @@ import 'package:qr_flutter/qr_flutter.dart';
 
 import '../widgets/portfolio_drawer.dart';
 
-class ContentPage extends StatefulWidget {
-  const ContentPage({super.key});
+class PortfolioPage extends StatefulWidget {
+  const PortfolioPage({super.key});
 
   @override
-  State<ContentPage> createState() => _ContentPageState();
+  State<PortfolioPage> createState() => _PortfolioPageState();
 }
 
-class _ContentPageState extends State<ContentPage> {
+class _PortfolioPageState extends State<PortfolioPage> {
   static const _teal = Color(0xFF5E7A80);
   static const _orange = Color(0xFFC9502B);
   static const _surface = Color(0xFFF4F8F7);

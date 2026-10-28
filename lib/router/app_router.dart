@@ -1,6 +1,6 @@
 import 'package:go_router/go_router.dart';
 
-import '../pages/content_page.dart';
+import '../pages/portfolio_page.dart';
 import '../pages/welcome_page.dart';
 
 final appRouter = GoRouter(
@@ -12,7 +12,7 @@ final appRouter = GoRouter(
     ),
     GoRoute(
       path: '/',
-      builder: (context, state) => const ContentPage(),
+      builder: (context, state) => const PortfolioPage(),
     ),
   ],
 );
