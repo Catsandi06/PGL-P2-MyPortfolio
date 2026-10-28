@@ -36,8 +36,8 @@ class PortfolioDrawer extends StatelessWidget {
           _DrawerItem(
             icon: Icons.work_outline,
             label: 'Portfolio',
-            location: '/',
-            selected: currentLocation == '/',
+            location: '/portfolio',
+            selected: currentLocation == '/portfolio',
           ),
         ],
       ),

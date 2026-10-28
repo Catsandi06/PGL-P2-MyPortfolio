@@ -11,7 +11,7 @@ final appRouter = GoRouter(
       builder: (context, state) => const WelcomePage(),
     ),
     GoRoute(
-      path: '/',
+      path: '/portfolio',
       builder: (context, state) => const PortfolioPage(),
     ),
   ],
