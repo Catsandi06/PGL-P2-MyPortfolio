@@ -90,7 +90,12 @@ class WelcomePage extends StatelessWidget {
                               color: Color(0xFFC9502B),
                             ),
                             SizedBox(width: 6),
-                            Text('Limpieza'),
+                            Text('Limpieza',
+                                style: TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                    color: Color(0xFF5E7A80),
+                                ),
+                            )
                           ],
                         ),
                       ),
