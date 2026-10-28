@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-class PortfolioDrawer extends StatelessWidget {
-  const PortfolioDrawer({super.key});
+class AppDrawer extends StatelessWidget {
+  const AppDrawer({super.key});
 
   // Colores de marca usados en la cabecera y en las opciones seleccionadas.
   static const _teal = Color(0xFF5E7A80);
@@ -132,10 +132,10 @@ class _DrawerItem extends StatelessWidget {
   Widget build(BuildContext context) {
     // El color y el fondo cambian para indicar qué pantalla está abierta.
     return ListTile(
-      iconColor: selected ? PortfolioDrawer._orange : PortfolioDrawer._teal,
-      textColor: selected ? PortfolioDrawer._orange : PortfolioDrawer._teal,
-      selectedColor: PortfolioDrawer._orange,
-      selectedTileColor: PortfolioDrawer._orange.withValues(alpha: 0.12),
+      iconColor: selected ? AppDrawer._orange : AppDrawer._teal,
+      textColor: selected ? AppDrawer._orange : AppDrawer._teal,
+      selectedColor: AppDrawer._orange,
+      selectedTileColor: AppDrawer._orange.withValues(alpha: 0.12),
       leading: Icon(icon),
       title: Text(label),
       selected: selected,

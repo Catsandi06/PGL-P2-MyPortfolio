@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
-import '../widgets/portfolio_drawer.dart';
+import '../widgets/app_drawer.dart';
 
 class PortfolioPage extends StatefulWidget {
   const PortfolioPage({super.key});
@@ -41,7 +41,7 @@ class _PortfolioPageState extends State<PortfolioPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: _surface,
-      drawer: const PortfolioDrawer(),
+      drawer: const AppDrawer(),
       appBar: AppBar(
         leading: Builder(
           builder: (context) => IconButton(

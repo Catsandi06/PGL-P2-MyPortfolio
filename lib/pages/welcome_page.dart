@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../widgets/portfolio_drawer.dart';
+import '../widgets/app_drawer.dart';
 
 class WelcomePage extends StatelessWidget {
   const WelcomePage({super.key});
@@ -13,7 +13,7 @@ class WelcomePage extends StatelessWidget {
     final colors = Theme.of(context).colorScheme;
 
     return Scaffold(
-      drawer: const PortfolioDrawer(),
+      drawer: const AppDrawer(),
       body: Stack(
         fit: StackFit.expand,
         children: [
