@@ -4,6 +4,9 @@ import 'package:go_router/go_router.dart';
 class PortfolioDrawer extends StatelessWidget {
   const PortfolioDrawer({super.key});
 
+  static const _teal = Color(0xFF5E7A80);
+  static const _orange = Color(0xFFC9502B);
+
   @override
   Widget build(BuildContext context) {
     final currentLocation = GoRouterState.of(context).uri.path;
@@ -14,11 +17,14 @@ class PortfolioDrawer extends StatelessWidget {
         children: [
           DrawerHeader(
             decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.primaryContainer,
+              color: _teal,
             ),
             child: Text(
               'Mi portfolio',
-              style: Theme.of(context).textTheme.headlineSmall,
+              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
             ),
           ),
           _DrawerItem(
@@ -28,28 +34,10 @@ class PortfolioDrawer extends StatelessWidget {
             selected: currentLocation == '/bienvenida',
           ),
           _DrawerItem(
-            icon: Icons.home_outlined,
-            label: 'Inicio',
+            icon: Icons.work_outline,
+            label: 'Portfolio',
             location: '/',
             selected: currentLocation == '/',
-          ),
-          _DrawerItem(
-            icon: Icons.person_outline,
-            label: 'Sobre mí',
-            location: '/sobre-mi',
-            selected: currentLocation == '/sobre-mi',
-          ),
-          _DrawerItem(
-            icon: Icons.work_outline,
-            label: 'Proyectos',
-            location: '/proyectos',
-            selected: currentLocation == '/proyectos',
-          ),
-          _DrawerItem(
-            icon: Icons.mail_outline,
-            label: 'Contacto',
-            location: '/contacto',
-            selected: currentLocation == '/contacto',
           ),
         ],
       ),
@@ -73,6 +61,10 @@ class _DrawerItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
+      iconColor: selected ? PortfolioDrawer._orange : PortfolioDrawer._teal,
+      textColor: selected ? PortfolioDrawer._orange : PortfolioDrawer._teal,
+      selectedColor: PortfolioDrawer._orange,
+      selectedTileColor: PortfolioDrawer._orange.withValues(alpha: 0.12),
       leading: Icon(icon),
       title: Text(label),
       selected: selected,

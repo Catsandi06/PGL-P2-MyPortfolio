@@ -10,7 +10,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp.router(
       title: 'Mi portfolio',
       theme: ThemeData(
-        colorScheme: .fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: .fromSeed(seedColor: const Color(0xFF5E7A80)),
       ),
       routerConfig: appRouter,
     );
