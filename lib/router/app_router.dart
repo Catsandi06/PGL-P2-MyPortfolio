@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../pages/content_page.dart';
@@ -13,11 +12,7 @@ final appRouter = GoRouter(
     ),
     GoRoute(
       path: '/',
-      builder: (context, state) => const ContentPage(
-        title: 'Portfolio',
-        icon: Icons.work_outline,
-        description: 'Una selección de mis proyectos y trabajos.',
-      ),
+      builder: (context, state) => const ContentPage(),
     ),
   ],
 );
