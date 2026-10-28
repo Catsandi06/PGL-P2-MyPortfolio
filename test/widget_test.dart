@@ -43,5 +43,10 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('¡Sandi Proto, el mejor gato programador!'), findsOneWidget);
+
+    await tester.tap(find.byTooltip('Open navigation menu'));
+    await tester.pumpAndSettle();
+    expect(find.text('Bienvenida'), findsOneWidget);
+    expect(find.text('Portfolio'), findsNWidgets(2));
   });
 }

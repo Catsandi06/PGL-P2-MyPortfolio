@@ -39,6 +39,11 @@ class _PortfolioPageState extends State<PortfolioPage> {
     return Scaffold(
       backgroundColor: _surface,
       drawer: const PortfolioDrawer(),
+      appBar: AppBar(
+        title: const Text('Portfolio'),
+        backgroundColor: _teal,
+        foregroundColor: Colors.white,
+      ),
       body: SafeArea(
         child: Column(
           children: [
