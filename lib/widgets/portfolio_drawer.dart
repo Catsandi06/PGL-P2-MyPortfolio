@@ -22,6 +22,12 @@ class PortfolioDrawer extends StatelessWidget {
             ),
           ),
           _DrawerItem(
+            icon: Icons.waving_hand_outlined,
+            label: 'Bienvenida',
+            location: '/bienvenida',
+            selected: currentLocation == '/bienvenida',
+          ),
+          _DrawerItem(
             icon: Icons.home_outlined,
             label: 'Inicio',
             location: '/',
