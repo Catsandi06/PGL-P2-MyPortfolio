@@ -12,7 +12,7 @@ class PortfolioPage extends StatefulWidget {
 
 class _PortfolioPageState extends State<PortfolioPage> {
   // Paleta visual común del portfolio.
-  static const _teal = Color(0xFF5E7A80);
+  static const _teal = Color(0xFF2A9D8F);
   static const _orange = Color(0xFFC9502B);
   static const _surface = Color(0xFFF4F8F7);
 
@@ -140,7 +140,7 @@ class _ProfileSection extends StatelessWidget {
                 width: 90,
                 height: 90,
                 child: ColoredBox(
-                  color: Color(0xFF5E7A80),
+                  color: Color(0xFF2A9D8F),
                   child: Icon(Icons.person, size: 48, color: Colors.white),
                 ),
               ),
@@ -212,7 +212,7 @@ class _HobbiesView extends StatelessWidget {
           margin: EdgeInsets.zero,
           color: index.isEven
               ? const Color(0xFFC9502B)
-              : const Color(0xFF5E7A80),
+              : const Color(0xFF2A9D8F),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(18),
           ),
@@ -270,7 +270,7 @@ class _RepositoryView extends StatelessWidget {
             '¡Sandi Proto, el mejor gato programador!',
             textAlign: TextAlign.center,
             style: TextStyle(
-              color: Color(0xFF5E7A80),
+              color: Color(0xFF2A9D8F),
               fontSize: 28,
               fontWeight: FontWeight.bold,
             ),
@@ -279,7 +279,7 @@ class _RepositoryView extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: const Color(0xFF5E7A80),
+              color: const Color(0xFF2A9D8F),
               borderRadius: BorderRadius.circular(12),
             ),
             child: QrImageView(
@@ -319,7 +319,7 @@ class _CatMemesPage extends StatelessWidget {
       backgroundColor: const Color(0xFFF4F8F7),
       appBar: AppBar(
         title: const Text('Memes de gatos'),
-        backgroundColor: const Color(0xFF5E7A80),
+        backgroundColor: const Color(0xFF2A9D8F),
         foregroundColor: Colors.white,
       ),
       body: ListView(
@@ -329,7 +329,7 @@ class _CatMemesPage extends StatelessWidget {
             'El rincón de los gatos programadores',
             textAlign: TextAlign.center,
             style: TextStyle(
-              color: Color(0xFF5E7A80),
+              color: Color(0xFF2A9D8F),
               fontSize: 24,
               fontWeight: FontWeight.bold,
             ),
@@ -364,7 +364,7 @@ class _CatMemesPage extends StatelessWidget {
                       meme.$2,
                       textAlign: TextAlign.center,
                       style: const TextStyle(
-                        color: Color(0xFF5E7A80),
+                        color: Color(0xFF2A9D8F),
                         fontSize: 17,
                         fontWeight: FontWeight.bold,
                       ),

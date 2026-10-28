@@ -5,7 +5,7 @@ class AppDrawer extends StatelessWidget {
   const AppDrawer({super.key});
 
   // Colores de marca usados en la cabecera y en las opciones seleccionadas.
-  static const _teal = Color(0xFF5E7A80);
+  static const _teal = Color(0xFF2A9D8F);
   static const _orange = Color(0xFFC9502B);
 
   @override
@@ -19,7 +19,7 @@ class AppDrawer extends StatelessWidget {
         children: [
           // La cabecera identifica la aplicación y muestra el usuario activo.
           DrawerHeader(
-            decoration: BoxDecoration(color: _teal),
+            decoration: const BoxDecoration(color: _teal),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -73,23 +73,32 @@ class AppDrawer extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(width: 12),
-                    const Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Nichel',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 17,
-                            fontWeight: FontWeight.bold,
+                    // Flexible limita el texto al espacio restante del drawer.
+                    Flexible(
+                      child: const Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Nichel Morales Hernández',
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 17,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
-                        ),
-                        SizedBox(height: 2),
-                        Text(
-                          'Mi portfolio',
-                          style: TextStyle(color: Colors.white70, fontSize: 13),
-                        ),
-                      ],
+                          SizedBox(height: 2),
+                          Text(
+                            'USR3742',
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              color: Colors.white70,
+                              fontSize: 13,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ],
                 ),
@@ -98,7 +107,7 @@ class AppDrawer extends StatelessWidget {
           ),
           _DrawerItem(
             // Cada opción lleva a una de las dos rutas principales.
-            icon: Icons.waving_hand_outlined,
+            icon: Icons.home,
             label: 'Bienvenida',
             location: '/bienvenida',
             selected: currentLocation == '/bienvenida',

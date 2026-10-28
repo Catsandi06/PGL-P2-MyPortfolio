@@ -17,7 +17,7 @@ class MyApp extends StatelessWidget {
       title: 'Mi portfolio',
       theme: ThemeData(
         // Color principal compartido por el drawer y las pantallas.
-        colorScheme: .fromSeed(seedColor: const Color(0xFF5E7A80)),
+        colorScheme: .fromSeed(seedColor: const Color(0xFF2A9D8F)),
       ),
       routerConfig: appRouter,
     );

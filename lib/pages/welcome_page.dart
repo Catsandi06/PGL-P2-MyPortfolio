@@ -5,6 +5,9 @@ import '../widgets/app_drawer.dart';
 class WelcomePage extends StatelessWidget {
   const WelcomePage({super.key});
 
+  static const _teal = Color(0xFF2A9D8F);
+  static const _orange = Color(0xFFC9502B);
+
   // Imagen local para que la pantalla no dependa de conexión a Internet.
   static const _backgroundImage = 'lib/images/home_bg.jpg';
 
@@ -87,15 +90,16 @@ class WelcomePage extends StatelessWidget {
                             Icon(
                               Icons.volunteer_activism,
                               size: 18,
-                              color: Color(0xFFC9502B),
+                              color: _orange,
                             ),
                             SizedBox(width: 6),
-                            Text('Limpieza',
-                                style: TextStyle(
-                                    fontWeight: FontWeight.w600,
-                                    color: Color(0xFF5E7A80),
-                                ),
-                            )
+                            Text(
+                              'Limpieza',
+                              style: TextStyle(
+                                fontWeight: FontWeight.w900,
+                                color: _teal,
+                              ),
+                            ),
                           ],
                         ),
                       ),
@@ -230,7 +234,7 @@ class _BottomNavigationItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final color = selected
         ? Theme.of(context).colorScheme.primary
-        : const Color(0xFF5E7A80);
+        : const Color(0xFF2A9D8F);
 
     return Column(
       mainAxisSize: MainAxisSize.min,
