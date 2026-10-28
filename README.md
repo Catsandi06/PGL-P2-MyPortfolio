@@ -1,112 +1,125 @@
 # Playas Canarias - My Portfolio
 
-Aplicación Flutter desarrollada para la asignatura **Programación Multimedia y Dispositivos Móviles (PGL)**. Portfolio personal con navegación mediante menú lateral (Drawer) y gestión de rutas con `go_router`.
+Flutter application developed for the **Programación Multimedia y Dispositivos Móviles (PGL)** course. Personal portfolio app with sidebar navigation (Drawer) and route management using `go_router`.
 
-## Características
+## Features
 
-- **Menú lateral (Drawer)** - Navegación entre las distintas pantallas de la aplicación
-- **Pantalla de Bienvenida** - Pantalla principal con imagen de fondo, saludo personalizado, buscador y barra de navegación inferior
-- **Pantalla de Portfolio** - Sección personal con información del alumno, lista de hobbies interactivos y repositorio GitHub
-- **Hobbies interactivos** - Grid con diferentes hobbies; al pulsar "Los gatos" accede a una galería de memes
-- **Galería de memes** - Pantalla con gifs de gatos programadores cargados desde Giphy
-- **Código QR** - Generado con `qr_flutter` que enlaza al perfil de GitHub
-- **Navegación con GoRouter** - Rutas centralizadas (`/bienvenida` y `/portfolio`)
+- **Sidebar navigation (Drawer)** - Navigate between the different screens of the application
+- **Welcome screen** - Main screen with background image, personalized greeting, search bar and bottom navigation bar
+- **Portfolio screen** - Personal section with student info, interactive hobbies grid and GitHub repository
+- **Interactive hobbies** - Grid with 8 different hobbies; tapping "Los gatos" opens a cat memes gallery
+- **Cat memes gallery** - Secondary screen with programmer cat gifs loaded from Giphy
+- **QR code** - Generated with `qr_flutter` linking to the GitHub profile
+- **GoRouter navigation** - Centralized routes (`/bienvenida` and `/portfolio`)
 
-## Tecnologías utilizadas
+## Tech stack
 
 - [Flutter](https://flutter.dev/) - SDK ^3.13.5
 - [Material Design 3](https://m3.material.io/)
-- [go_router](https://pub.dev/packages/go_router) ^16.2.1 - Navegación declarativa
-- [qr_flutter](https://pub.dev/packages/qr_flutter) ^4.1.0 - Generación de códigos QR
+- [go_router](https://pub.dev/packages/go_router) ^16.2.1 - Declarative navigation
+- [qr_flutter](https://pub.dev/packages/qr_flutter) ^4.1.0 - QR code generation
 
-## Estructura del proyecto
+## Project structure
 
 ```text
 lib/
-├── main.dart           # Punto de entrada y configuración de la app
+├── main.dart                # App entry point and global configuration
 ├── router/
-│   └── app_router.dart # Configuración de rutas con go_router
+│   └── app_router.dart      # Route configuration with go_router
 ├── widgets/
-│   └── app_drawer.dart # Menú lateral de navegación
+│   └── app_drawer.dart      # Sidebar navigation drawer
 └── pages/
-    ├── welcome_page.dart   # Pantalla de bienvenida
-    └── portfolio_page.dart # Pantalla de portfolio (perfil, hobbies, repositorio y memes)
+    ├── welcome_page.dart     # Welcome screen
+    └── portfolio_page.dart   # Portfolio screen (profile, hobbies, repository, memes)
 ```
 
-## Recursos
+## Resources
 
-### Imágenes locales
-- `lib/images/home_bg.jpg` - Imagen de fondo de la pantalla de bienvenida
-- `assets/images/Sandi_proto.jpg` - Imagen de Sandi Proto en la sección de repositorio
+### Local images
 
-### Datos
-- Avatar cargado desde `https://github.com/Catsandi06.png`
-- Código QR apunta a `https://github.com/Catsandi06/`
-- Memes cargados desde [Giphy](https://giphy.com/)
+- `lib/images/home_bg.jpg` - Background image for the welcome screen
+- `assets/images/Sandi_proto.jpg` - Sandi Proto image in the repository section
 
-## Pantallas
+### Data sources
 
-### Pantalla de Bienvenida
-Pantalla principal con fondo de playa, menú hamburguesa para abrir el drawer, tarjeta "Limpieza", saludo, buscador de playas y barra de navegación inferior.
+- Avatar loaded from `https://github.com/Catsandi06.png`
+- QR code points to `https://github.com/Catsandi06/`
+- Memes loaded from [Giphy](https://giphy.com/)
 
-### Menú Lateral (Drawer)
-Muestra información del usuario (Nichel Morales Hernández - USR3742), avatar de GitHub e icono de la app. Permite navegar entre "Bienvenida" y "Portfolio".
+## Screens
 
-### Pantalla de Portfolio
-- **Cabecera**: Título "Portfolio"
-- **Perfil**: Avatar y descripción del alumno
-- **Pestañas**: "Mis hobbies" y "Mi repositorio" con `NavigationBar`
-- **Hobbies**: Grid con 8 hobbies diferentes (Informática, Música, Gatos, Consolas retro, Furry, Coches, Impresión 3D, Viajes)
-- **Repositorio**: Imagen de Sandi Proto, descripción y código QR hacia GitHub
-- **Memes de gatos**: Pantalla secundaria accesible desde el hobby "Los gatos"
+### Welcome screen
 
-## Capturas de pantalla
+Main screen with beach background, hamburger menu to open the drawer, "Limpieza" card, greeting, beach search bar and bottom navigation bar.
+
+### Sidebar (Drawer)
+
+Shows user information (Nichel Morales Hernández - USR3742), GitHub avatar and app icon. Allows navigation between "Bienvenida" and "Portfolio".
+
+### Portfolio screen
+
+- **Header**: "Portfolio" title
+- **Profile**: Avatar and student description
+- **Tabs**: "Mis hobbies" and "Mi repositorio" with `NavigationBar`
+- **Hobbies**: Grid with 8 different hobbies (Informática, Música, Gatos, Consolas retro, Furry, Coches, Impresión 3D, Viajes)
+- **Repository**: Sandi Proto image, description and QR code to GitHub
+- **Cat memes**: Secondary screen accessible from the "Los gatos" hobby
+
+## Screenshots
 
 ### Android
 
-|                                     Pantalla                                     | Descripción                                |
-|:--------------------------------------------------------------------------------:|--------------------------------------------|
-|           ![Pantalla de Bienvenida](assets/screenshots/bienvenida.png)           | Pantalla de bienvenida con imagen de fondo |
-|                 ![Drawer abierto](assets/screenshots/drawer.png)                 | Menú lateral con información del usuario   |
-|       ![Portfolio - Mis hobbies](assets/screenshots/portfolio_hobbies.png)       | Pestaña de hobbies del portfolio           |
-| ![Portfolio - Hobbies con gatos](assets/screenshots/portfolio_hobbies_gatos.png) | Interacción con el hobby "Los gatos"       |
-|   ![Portfolio - Mi repositorio](assets/screenshots/portfolio_repositorio.png)    | Pestaña de repositorio con QR de GitHub    |
-|              ![Memes de gatos](assets/screenshots/memes_gatos.png)               | Pantalla de memes de gatos programadores   |
+<p align="center">
+  <img src="docs/screenshots/bienvenida.png" width="200" alt="Welcome screen" />
+  <img src="docs/screenshots/drawer.png" width="200" alt="Drawer open" />
+  <img src="docs/screenshots/portfolio_hobbies.png" width="200" alt="Portfolio - My hobbies" />
+  <img src="docs/screenshots/portfolio_repositorio.png" width="200" alt="Portfolio - My repository" />
+  <img src="docs/screenshots/memes_gatos.png" width="200" alt="Cat memes" />
+</p>
 
-## Instalación y ejecución
+| Screen | Description |
+| --- | --- |
+| Welcome | Main screen with beach background image |
+| Drawer open | Sidebar with user information |
+| Portfolio - My hobbies | Portfolio hobbies tab |
+| Portfolio - My repository | Repository tab with GitHub QR code |
+| Cat memes | Programmer cat memes screen (accessible from "Los gatos" hobby) |
 
-### Requisitos previos
+## Installation and running
+
+### Prerequisites
+
 - [Flutter SDK](https://docs.flutter.dev/get-started/install) ^3.13.5
 - Android Studio / VS Code
-- Emulador Android o dispositivo físico
+- Android emulator or physical device
 
-### Pasos
+### Steps
 
-1. **Clonar el repositorio**
+1. **Clone the repository**
 ```bash
 git clone https://github.com/Catsandi06/PGL-P2-MyPortfolio.git
 cd PGL-P2-MyPortfolio
 ```
 
-2. **Instalar dependencias**
+2. **Install dependencies**
 ```bash
 flutter pub get
 ```
 
-3. **Ejecutar la aplicación**
+3. **Run the application**
 ```bash
-# En emulador/dispositivo conectado
+# On connected emulator/device
 flutter run
 
-# O seleccionar dispositivo específico
+# Or select a specific device
 flutter run -d <device_id>
 ```
 
-## Autor
+## Author
 
 **Nichel Morales Hernández** (USR3742)  
 [GitHub](https://github.com/Catsandi06)
 
-## Licencia
+## License
 
-Este proyecto es únicamente con fines educativos.
+This project is for educational purposes only.
