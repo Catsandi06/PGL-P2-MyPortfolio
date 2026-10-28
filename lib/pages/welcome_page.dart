@@ -5,9 +5,7 @@ import '../widgets/portfolio_drawer.dart';
 class WelcomePage extends StatelessWidget {
   const WelcomePage({super.key});
 
-  static const _backgroundImage =
-      'https://images.unsplash.com/photo-1507525097447-2f4e3f7f5d4f'
-      '?auto=format&fit=crop&w=1200&q=85';
+  static const _backgroundImage = 'lib/images/home_bg.jpg';
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +16,7 @@ class WelcomePage extends StatelessWidget {
       body: Stack(
         fit: StackFit.expand,
         children: [
-          Image.network(
+          Image.asset(
             _backgroundImage,
             fit: BoxFit.cover,
             errorBuilder: (context, error, stackTrace) => DecoratedBox(
