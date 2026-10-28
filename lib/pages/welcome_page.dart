@@ -5,6 +5,7 @@ import '../widgets/portfolio_drawer.dart';
 class WelcomePage extends StatelessWidget {
   const WelcomePage({super.key});
 
+  // Imagen local para que la pantalla no dependa de conexión a Internet.
   static const _backgroundImage = 'lib/images/home_bg.jpg';
 
   @override
@@ -16,6 +17,7 @@ class WelcomePage extends StatelessWidget {
       body: Stack(
         fit: StackFit.expand,
         children: [
+          // La imagen ocupa toda la pantalla y mantiene sus proporciones.
           Image.asset(
             _backgroundImage,
             fit: BoxFit.cover,
@@ -39,6 +41,7 @@ class WelcomePage extends StatelessWidget {
             ),
           ),
           DecoratedBox(
+            // Degradado oscuro para mejorar la lectura del contenido.
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 begin: Alignment.topCenter,
@@ -61,6 +64,7 @@ class WelcomePage extends StatelessWidget {
                     children: [
                       Builder(
                         builder: (context) => IconButton(
+                          // Builder obtiene el Scaffold correcto para abrir el drawer.
                           onPressed: () => Scaffold.of(context).openDrawer(),
                           color: Colors.white,
                           icon: const Icon(Icons.menu),

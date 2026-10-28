@@ -11,10 +11,12 @@ class PortfolioPage extends StatefulWidget {
 }
 
 class _PortfolioPageState extends State<PortfolioPage> {
+  // Paleta visual común del portfolio.
   static const _teal = Color(0xFF5E7A80);
   static const _orange = Color(0xFFC9502B);
   static const _surface = Color(0xFFF4F8F7);
 
+  // Índice de la sección inferior activa: hobbies o repositorio.
   int _selectedIndex = 0;
 
   static const _hobbies = [
@@ -29,6 +31,7 @@ class _PortfolioPageState extends State<PortfolioPage> {
   ];
 
   void _openCatMemes() {
+    // Los memes se abren como una pantalla secundaria desde la tarjeta de gatos.
     Navigator.of(context).push(
       MaterialPageRoute<void>(builder: (context) => const _CatMemesPage()),
     );
@@ -40,6 +43,14 @@ class _PortfolioPageState extends State<PortfolioPage> {
       backgroundColor: _surface,
       drawer: const PortfolioDrawer(),
       appBar: AppBar(
+        leading: Builder(
+          builder: (context) => IconButton(
+            // Se declara explícitamente para que el drawer sea visible también aquí.
+            onPressed: () => Scaffold.of(context).openDrawer(),
+            icon: const Icon(Icons.menu),
+            tooltip: 'Abrir menú',
+          ),
+        ),
         title: const Text('Portfolio'),
         backgroundColor: _teal,
         foregroundColor: Colors.white,
@@ -67,6 +78,7 @@ class _PortfolioPageState extends State<PortfolioPage> {
             const _ProfileSection(),
             Expanded(
               child: AnimatedSwitcher(
+                // Cambia el contenido sin reconstruir la pantalla completa.
                 duration: const Duration(milliseconds: 250),
                 child: _selectedIndex == 0
                     ? _HobbiesView(
@@ -171,16 +183,16 @@ class _HobbiesView extends StatelessWidget {
   final VoidCallback onCatsTap;
 
   IconData _iconFor(String hobby) => switch (hobby) {
-        'La informática' => Icons.computer,
-        'La música' => Icons.music_note,
-        'Los gatos' => Icons.pets,
-        'Las consolas retro' => Icons.sports_esports,
-        'Ser furry' => Icons.pets_outlined,
-        'Los coches' => Icons.directions_car,
-        'La impresión 3D' => Icons.view_in_ar,
-        'Los viajes' => Icons.flight,
-        _ => Icons.favorite,
-      };
+    'La informática' => Icons.computer,
+    'La música' => Icons.music_note,
+    'Los gatos' => Icons.pets,
+    'Las consolas retro' => Icons.sports_esports,
+    'Ser furry' => Icons.pets_outlined,
+    'Los coches' => Icons.directions_car,
+    'La impresión 3D' => Icons.view_in_ar,
+    'Los viajes' => Icons.flight,
+    _ => Icons.favorite,
+  };
 
   @override
   Widget build(BuildContext context) {
@@ -198,7 +210,9 @@ class _HobbiesView extends StatelessWidget {
         final isCats = hobby == 'Los gatos';
         return Card(
           margin: EdgeInsets.zero,
-          color: index.isEven ? const Color(0xFFC9502B) : const Color(0xFF5E7A80),
+          color: index.isEven
+              ? const Color(0xFFC9502B)
+              : const Color(0xFF5E7A80),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(18),
           ),
@@ -332,16 +346,17 @@ class _CatMemesPage extends StatelessWidget {
                     width: double.infinity,
                     height: 220,
                     fit: BoxFit.cover,
-                    errorBuilder: (context, error, stackTrace) => const SizedBox(
-                      height: 220,
-                      child: Center(
-                        child: Icon(
-                          Icons.pets,
-                          color: Color(0xFFC9502B),
-                          size: 64,
+                    errorBuilder: (context, error, stackTrace) =>
+                        const SizedBox(
+                          height: 220,
+                          child: Center(
+                            child: Icon(
+                              Icons.pets,
+                              color: Color(0xFFC9502B),
+                              size: 64,
+                            ),
+                          ),
                         ),
-                      ),
-                    ),
                   ),
                   Padding(
                     padding: const EdgeInsets.all(14),
