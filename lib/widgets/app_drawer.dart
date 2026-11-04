@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 class AppDrawer extends StatelessWidget {
   const AppDrawer({super.key});
@@ -135,12 +136,67 @@ class AppDrawer extends StatelessWidget {
               ],
             ),
           ),
-          const Padding(
-            padding: EdgeInsets.fromLTRB(16, 8, 16, 20),
-            child: Text(
-              'Versión 1.1.4+7',
-              style: TextStyle(color: Colors.grey, fontSize: 12),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 8, 16, 20),
+            child: FutureBuilder<PackageInfo>(
+              future: PackageInfo.fromPlatform(),
+              builder: (context, snapshot) {
+                final version = snapshot.data?.version;
+                final build = snapshot.data?.buildNumber;
+                final label = version == null
+                    ? 'Versión'
+                    : 'Versión $version${build == null ? '' : '+$build'}';
+
+                return InkWell(
+                  onTap: () => _showChangelog(context),
+                  borderRadius: BorderRadius.circular(8),
+                  child: Padding(
+                    padding: const EdgeInsets.all(8),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(
+                          Icons.info_outline,
+                          color: Colors.grey,
+                          size: 16,
+                        ),
+                        const SizedBox(width: 6),
+                        Text(
+                          label,
+                          style: const TextStyle(
+                            color: Colors.grey,
+                            fontSize: 12,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              },
             ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _showChangelog(BuildContext context) async {
+    final changelog = await DefaultAssetBundle.of(context)
+        .loadString('CHANGELOG.md');
+
+    if (!context.mounted) {
+      return;
+    }
+
+    await showDialog<void>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Historial de cambios'),
+        content: SingleChildScrollView(child: SelectableText(changelog)),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('Cerrar'),
           ),
         ],
       ),
