@@ -10,7 +10,7 @@ Aplicación Flutter desarrollada para la asignatura **Programación Multimedia y
 - **Hobbies interactivos** - Grid con 8 hobbies diferentes; al pulsar "Los gatos" accede a una galería de memes
 - **Galería de memes** - Pantalla con gifs de gatos programadores cargados desde Giphy
 - **Código QR** - Generado con `qr_flutter` que enlaza al perfil de GitHub
-- **CRUD de elementos** - Lista dinámica con alta desde un `Dialog`, categoría con imagen, borrado y contador total
+- **CRUD de playas** - Lista dinámica con alta desde un `Dialog`, imagen opcional, categoría, limpieza, aforo aproximado, borrado y contador total
 - **Navegación con GoRouter** - Rutas centralizadas (`/bienvenida`, `/portfolio` y `/elementos`)
 
 ## Tecnologías utilizadas
@@ -31,7 +31,8 @@ lib/
 │   └── app_drawer.dart      # Menú lateral de navegación
 └── pages/
     ├── welcome_page.dart     # Pantalla de bienvenida
-    └── portfolio_page.dart   # Pantalla de portfolio (perfil, hobbies, repositorio y memes)
+    ├── portfolio_page.dart   # Pantalla de portfolio (perfil, hobbies, repositorio y memes)
+    └── items_page.dart       # CRUD de playas y formulario modal
 ```
 
 ## Recursos
@@ -57,15 +58,16 @@ Pantalla principal con fondo de playa, menú hamburguesa para abrir el drawer, t
 
 Muestra información del usuario (Nichel Morales Hernández - USR3742), avatar de GitHub e icono de la app. Permite navegar entre "Bienvenida", "Portfolio" y "Mis elementos".
 
-### Pantalla de Mis elementos
+### Pantalla de Mis playas
 
 La opción **Mis elementos** del Drawer abre una lista dinámica construida con
-`ListView.builder`. El botón **Añadir elemento** muestra un `showDialog` con un
-`Form` que valida nombre y descripción breve y permite elegir una categoría.
-Al guardar, el diálogo devuelve un `ListItem` con `Navigator.pop` y la pantalla
-lo añade al estado mediante `setState`. La categoría seleccionada determina la
-imagen local que aparece junto al elemento. Cada fila tiene un botón de borrado
-y el marcador superior muestra en todo momento el número total de elementos.
+`ListView.builder`. El botón **Añadir playa** muestra un `showDialog` con un
+`Form` que valida nombre, descripción breve, categoría, URL de imagen,
+limpieza y aforo aproximado. Al guardar, el diálogo devuelve una instancia de
+`Beach` con `Navigator.pop` y la pantalla la añade al estado mediante
+`setState`. Cada fila muestra la imagen, el estado de limpieza y el número de
+personas aproximado, además de tener un botón de borrado y un marcador con el
+total de playas.
 
 ### Pantalla de Portfolio
 
@@ -75,6 +77,17 @@ y el marcador superior muestra en todo momento el número total de elementos.
 - **Hobbies**: Grid con 8 hobbies diferentes (Informática, Música, Gatos, Consolas retro, Furry, Coches, Impresión 3D, Viajes)
 - **Repositorio**: Imagen de Sandi Proto, descripción y código QR hacia GitHub
 - **Memes de gatos**: Pantalla secundaria accesible desde el hobby "Los gatos"
+
+### Pantalla de Mis playas
+
+La opción **Mis elementos** del Drawer gestiona playas con una lista dinámica
+construida mediante `ListView.builder`. El botón **Añadir playa** abre un
+`showDialog` con un `Form` validado para introducir nombre, descripción breve,
+categoría, URL de imagen, número aproximado de personas y un `Checkbox` que
+indica si la playa está limpia. Si no se proporciona una URL, se utiliza una
+imagen local de respaldo según la categoría. Al guardar, el diálogo devuelve
+una instancia de `Beach` mediante `Navigator.pop`; `setState` la incorpora a
+la lista. Cada tarjeta muestra toda la información y permite borrar la playa.
 
 ## Capturas de pantalla
 

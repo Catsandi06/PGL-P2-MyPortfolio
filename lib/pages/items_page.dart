@@ -2,25 +2,31 @@ import 'package:flutter/material.dart';
 
 import '../widgets/app_drawer.dart';
 
-/// Categorías disponibles para clasificar cada elemento de la lista.
-const itemCategories = <String>[
-  'Playa',
-  'Naturaleza',
-  'Portfolio',
-  'Otro',
+/// Categorías disponibles para clasificar cada playa.
+const beachCategories = <String>[
+  'Playa urbana',
+  'Playa natural',
+  'Playa familiar',
+  'Playa deportiva',
 ];
 
-/// Modelo inmutable que representa un elemento creado desde el formulario.
-class ListItem {
-  const ListItem({
+/// Modelo inmutable que representa una playa creada desde el formulario.
+class Beach {
+  const Beach({
     required this.name,
     required this.description,
     required this.category,
+    required this.imageUrl,
+    required this.isClean,
+    required this.approximatePeople,
   });
 
   final String name;
   final String description;
   final String category;
+  final String imageUrl;
+  final bool isClean;
+  final int approximatePeople;
 }
 
 class ItemsPage extends StatefulWidget {
@@ -35,48 +41,53 @@ class _ItemsPageState extends State<ItemsPage> {
   static const _orange = Color(0xFFC9502B);
   static const _surface = Color(0xFFF4F8F7);
 
-  // La lista vive en el estado para que setState actualice la interfaz
-  // automáticamente después de crear o borrar un elemento.
-  final List<ListItem> _items = [
-    const ListItem(
+  // La lista vive en el estado para que setState actualice la interfaz.
+  final List<Beach> _beaches = [
+    const Beach(
       name: 'Playa de Las Canteras',
       description: 'Una playa urbana para pasear y desconectar.',
-      category: 'Playa',
+      category: 'Playa urbana',
+      imageUrl: '',
+      isClean: true,
+      approximatePeople: 120,
     ),
-    const ListItem(
-      name: 'Sandi Proto',
-      description: 'Mi proyecto favorito del portfolio.',
-      category: 'Portfolio',
+    const Beach(
+      name: 'Playa de Maspalomas',
+      description: 'Dunas, arena dorada y vistas al océano.',
+      category: 'Playa natural',
+      imageUrl: '',
+      isClean: true,
+      approximatePeople: 75,
     ),
   ];
 
-  String _imageForCategory(String category) => switch (category) {
-    'Playa' || 'Naturaleza' => 'assets/images/home_bg.jpg',
+  String _fallbackImageForCategory(String category) => switch (category) {
+    'Playa urbana' || 'Playa familiar' => 'assets/images/home_bg.jpg',
     _ => 'assets/images/Sandi_proto.jpg',
   };
 
-  Future<void> _showAddItemDialog() async {
-    // showDialog devuelve el objeto que el formulario pasa a Navigator.pop.
-    final newItem = await showDialog<ListItem>(
+  Future<void> _showAddBeachDialog() async {
+    // showDialog devuelve la playa que el formulario pasa a Navigator.pop.
+    final newBeach = await showDialog<Beach>(
       context: context,
-      builder: (context) => const _AddItemDialog(),
+      builder: (context) => const _AddBeachDialog(),
     );
 
-    if (!mounted || newItem == null) {
+    if (!mounted || newBeach == null) {
       return;
     }
 
-    setState(() => _items.add(newItem));
+    setState(() => _beaches.add(newBeach));
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('«${newItem.name}» añadido a la lista')),
+      SnackBar(content: Text('«${newBeach.name}» añadida a la lista')),
     );
   }
 
-  void _deleteItem(int index) {
-    final deletedItem = _items[index];
-    setState(() => _items.removeAt(index));
+  void _deleteBeach(int index) {
+    final deletedBeach = _beaches[index];
+    setState(() => _beaches.removeAt(index));
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('«${deletedItem.name}» eliminado')),
+      SnackBar(content: Text('«${deletedBeach.name}» eliminada')),
     );
   }
 
@@ -93,7 +104,7 @@ class _ItemsPageState extends State<ItemsPage> {
             tooltip: 'Abrir menú',
           ),
         ),
-        title: const Text('Mis elementos'),
+        title: const Text('Mis playas'),
         backgroundColor: _teal,
         foregroundColor: Colors.white,
       ),
@@ -116,7 +127,7 @@ class _ItemsPageState extends State<ItemsPage> {
                       const SizedBox(width: 12),
                       const Expanded(
                         child: Text(
-                          'Elementos guardados',
+                          'Playas guardadas',
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 18,
@@ -126,7 +137,7 @@ class _ItemsPageState extends State<ItemsPage> {
                       ),
                       // Este marcador siempre refleja la longitud actual.
                       Badge(
-                        label: Text('${_items.length}'),
+                        label: Text('${_beaches.length}'),
                         backgroundColor: _orange,
                         textColor: Colors.white,
                         child: const Icon(
@@ -141,13 +152,13 @@ class _ItemsPageState extends State<ItemsPage> {
               ),
             ),
             Expanded(
-              child: _items.isEmpty
-                  ? const _EmptyItemsMessage()
+              child: _beaches.isEmpty
+                  ? const _EmptyBeachesMessage()
                   : ListView.builder(
                       padding: const EdgeInsets.fromLTRB(16, 8, 16, 96),
-                      itemCount: _items.length,
+                      itemCount: _beaches.length,
                       itemBuilder: (context, index) {
-                        final item = _items[index];
+                        final beach = _beaches[index];
                         return Card(
                           margin: const EdgeInsets.only(bottom: 12),
                           clipBehavior: Clip.antiAlias,
@@ -155,15 +166,31 @@ class _ItemsPageState extends State<ItemsPage> {
                             contentPadding: const EdgeInsets.all(10),
                             leading: ClipRRect(
                               borderRadius: BorderRadius.circular(10),
-                              child: Image.asset(
-                                _imageForCategory(item.category),
-                                width: 68,
-                                height: 68,
-                                fit: BoxFit.cover,
+                              child: beach.imageUrl.isEmpty
+                                  ? Image.asset(
+                                      _fallbackImageForCategory(beach.category),
+                                      width: 68,
+                                      height: 68,
+                                      fit: BoxFit.cover,
+                                    )
+                                  : Image.network(
+                                      beach.imageUrl,
+                                      width: 68,
+                                      height: 68,
+                                      fit: BoxFit.cover,
+                                      errorBuilder: (context, error, stackTrace) =>
+                                          Image.asset(
+                                        _fallbackImageForCategory(
+                                          beach.category,
+                                        ),
+                                        width: 68,
+                                        height: 68,
+                                        fit: BoxFit.cover,
+                                      ),
                               ),
                             ),
                             title: Text(
-                              item.name,
+                              beach.name,
                               style: const TextStyle(
                                 fontWeight: FontWeight.bold,
                               ),
@@ -171,13 +198,16 @@ class _ItemsPageState extends State<ItemsPage> {
                             subtitle: Padding(
                               padding: const EdgeInsets.only(top: 5),
                               child: Text(
-                                '${item.description}\nCategoría: ${item.category}',
+                                '${beach.description}\n'
+                                'Categoría: ${beach.category} · '
+                                '${beach.isClean ? 'Limpia' : 'Pendiente de limpieza'}\n'
+                                'Aforo aproximado: ${beach.approximatePeople} personas',
                               ),
                             ),
                             isThreeLine: true,
                             trailing: IconButton(
-                              onPressed: () => _deleteItem(index),
-                              tooltip: 'Borrar ${item.name}',
+                              onPressed: () => _deleteBeach(index),
+                              tooltip: 'Borrar ${beach.name}',
                               color: _orange,
                               icon: const Icon(Icons.delete_outline),
                             ),
@@ -190,18 +220,18 @@ class _ItemsPageState extends State<ItemsPage> {
         ),
       ),
       floatingActionButton: FloatingActionButton.extended(
-        onPressed: _showAddItemDialog,
+        onPressed: _showAddBeachDialog,
         backgroundColor: _orange,
         foregroundColor: Colors.white,
         icon: const Icon(Icons.add),
-        label: const Text('Añadir elemento'),
+        label: const Text('Añadir playa'),
       ),
     );
   }
 }
 
-class _EmptyItemsMessage extends StatelessWidget {
-  const _EmptyItemsMessage();
+class _EmptyBeachesMessage extends StatelessWidget {
+  const _EmptyBeachesMessage();
 
   @override
   Widget build(BuildContext context) {
@@ -218,7 +248,7 @@ class _EmptyItemsMessage extends StatelessWidget {
             ),
             const SizedBox(height: 12),
             const Text(
-              'No hay elementos todavía.\nPulsa «Añadir elemento» para crear uno.',
+              'No hay playas todavía.\nPulsa «Añadir playa» para crear una.',
               textAlign: TextAlign.center,
             ),
           ],
@@ -228,23 +258,28 @@ class _EmptyItemsMessage extends StatelessWidget {
   }
 }
 
-class _AddItemDialog extends StatefulWidget {
-  const _AddItemDialog();
+class _AddBeachDialog extends StatefulWidget {
+  const _AddBeachDialog();
 
   @override
-  State<_AddItemDialog> createState() => _AddItemDialogState();
+  State<_AddBeachDialog> createState() => _AddBeachDialogState();
 }
 
-class _AddItemDialogState extends State<_AddItemDialog> {
+class _AddBeachDialogState extends State<_AddBeachDialog> {
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
   final _descriptionController = TextEditingController();
-  String _category = itemCategories.first;
+  final _imageUrlController = TextEditingController();
+  final _peopleController = TextEditingController(text: '0');
+  String _category = beachCategories.first;
+  bool _isClean = true;
 
   @override
   void dispose() {
     _nameController.dispose();
     _descriptionController.dispose();
+    _imageUrlController.dispose();
+    _peopleController.dispose();
     super.dispose();
   }
 
@@ -254,10 +289,13 @@ class _AddItemDialogState extends State<_AddItemDialog> {
     }
 
     Navigator.of(context).pop(
-      ListItem(
+      Beach(
         name: _nameController.text.trim(),
         description: _descriptionController.text.trim(),
         category: _category,
+        imageUrl: _imageUrlController.text.trim(),
+        isClean: _isClean,
+        approximatePeople: int.parse(_peopleController.text.trim()),
       ),
     );
   }
@@ -265,7 +303,7 @@ class _AddItemDialogState extends State<_AddItemDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Text('Añadir elemento'),
+      title: const Text('Añadir playa'),
       content: Form(
         key: _formKey,
         child: SingleChildScrollView(
@@ -305,7 +343,7 @@ class _AddItemDialogState extends State<_AddItemDialog> {
                   labelText: 'Categoría',
                   prefixIcon: Icon(Icons.category_outlined),
                 ),
-                items: itemCategories
+                items: beachCategories
                     .map(
                       (category) => DropdownMenuItem(
                         value: category,
@@ -318,6 +356,49 @@ class _AddItemDialogState extends State<_AddItemDialog> {
                     setState(() => _category = value);
                   }
                 },
+              ),
+              const SizedBox(height: 12),
+              TextFormField(
+                controller: _imageUrlController,
+                keyboardType: TextInputType.url,
+                decoration: const InputDecoration(
+                  labelText: 'URL de imagen (opcional)',
+                  hintText: 'https://ejemplo.com/playa.jpg',
+                  prefixIcon: Icon(Icons.image_outlined),
+                ),
+                validator: (value) {
+                  final url = value?.trim() ?? '';
+                  if (url.isNotEmpty &&
+                      !url.startsWith('https://')) {
+                    return 'La URL debe comenzar por https://';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 12),
+              TextFormField(
+                controller: _peopleController,
+                keyboardType: TextInputType.number,
+                decoration: const InputDecoration(
+                  labelText: 'Personas aproximadas',
+                  prefixIcon: Icon(Icons.people_outline),
+                ),
+                validator: (value) {
+                  final people = int.tryParse(value?.trim() ?? '');
+                  if (people == null || people < 0) {
+                    return 'Indica un número igual o mayor que 0';
+                  }
+                  return null;
+                },
+              ),
+              CheckboxListTile(
+                contentPadding: EdgeInsets.zero,
+                title: const Text('La playa está limpia'),
+                value: _isClean,
+                onChanged: (value) {
+                  setState(() => _isClean = value ?? false);
+                },
+                controlAffinity: ListTileControlAffinity.leading,
               ),
             ],
           ),
