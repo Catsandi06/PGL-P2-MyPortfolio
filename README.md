@@ -10,7 +10,7 @@ Aplicación Flutter desarrollada para la asignatura **Programación Multimedia y
 - **Hobbies interactivos** - Grid con 8 hobbies diferentes; al pulsar "Los gatos" accede a una galería de memes
 - **Galería de memes** - Pantalla con gifs de gatos programadores cargados desde Giphy
 - **Código QR** - Generado con `qr_flutter` que enlaza al perfil de GitHub
-- **CRUD de playas** - Lista dinámica con alta desde un `Dialog`, imagen opcional, categoría, limpieza, aforo aproximado, borrado individual, borrado total protegido y contador
+- **CRUD de playas** - Lista dinámica con alta desde un `Dialog`, imagen por URL o galería, categoría, limpieza, aforo aproximado, borrado individual, borrado total protegido y contador
 - **Navegación con GoRouter** - Rutas centralizadas (`/bienvenida`, `/portfolio` y `/elementos`)
 
 ## Tecnologías utilizadas
@@ -19,6 +19,7 @@ Aplicación Flutter desarrollada para la asignatura **Programación Multimedia y
 - [Material Design 3](https://m3.material.io/)
 - [go_router](https://pub.dev/packages/go_router) ^16.2.1 - Navegación declarativa
 - [qr_flutter](https://pub.dev/packages/qr_flutter) ^4.1.0 - Generación de códigos QR
+- [image_picker](https://pub.dev/packages/image_picker) ^1.2.4 - Selección segura de imágenes
 
 ## Estructura del proyecto
 
@@ -62,8 +63,11 @@ Muestra información del usuario (Nichel Morales Hernández - USR3742), avatar d
 
 La opción **Mis elementos** del Drawer abre una lista dinámica construida con
 `ListView.builder`. El botón **Añadir playa** muestra un `showDialog` con un
-`Form` que valida nombre, descripción breve, categoría, URL de imagen,
-limpieza y aforo aproximado. Al guardar, el diálogo devuelve una instancia de
+`Form` que valida nombre, descripción breve, categoría, URL de imagen o imagen
+seleccionada desde la galería, limpieza y aforo aproximado. Las imágenes
+seleccionadas se limitan a 10 MB y se validan por firma binaria para aceptar
+solo JPEG, PNG o WebP; se guardan en memoria, sin usar rutas o nombres
+controlados por el usuario. Al guardar, el diálogo devuelve una instancia de
 `Beach` con `Navigator.pop` y la pantalla la añade al estado mediante
 `setState`. Cada fila muestra la imagen, el estado de limpieza y el número de
 personas aproximado, además de tener un botón de borrado y un marcador con el
