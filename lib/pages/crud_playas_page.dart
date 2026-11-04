@@ -35,6 +35,7 @@ class Beach {
   final int approximatePeople;
 }
 
+/// Pantalla principal para consultar, crear y borrar playas.
 class CrudPlayasPage extends StatefulWidget {
   const CrudPlayasPage({super.key});
 
@@ -73,7 +74,8 @@ class _CrudPlayasPageState extends State<CrudPlayasPage> {
   };
 
   Future<void> _showAddBeachDialog() async {
-    // showDialog devuelve la playa que el formulario pasa a Navigator.pop.
+    // El diálogo devuelve la playa mediante Navigator.pop cuando el formulario
+    // supera todas sus validaciones.
     final newBeach = await showDialog<Beach>(
       context: context,
       builder: (context) => const _AddBeachDialog(),
@@ -102,6 +104,7 @@ class _CrudPlayasPageState extends State<CrudPlayasPage> {
       return;
     }
 
+    // La confirmación evita borrar la lista con un toque accidental.
     final shouldDelete = await showDialog<bool>(
       context: context,
       builder: (context) => const _DeleteAllDialog(),
@@ -383,6 +386,8 @@ class _AddBeachDialogState extends State<_AddBeachDialog> {
         return;
       }
 
+      // Se trabajan los bytes en memoria: nunca se ejecuta ni se reutiliza
+      // como ruta un archivo elegido por el usuario.
       final bytes = await pickedFile.readAsBytes();
       if (bytes.length > 10 * 1024 * 1024) {
         _showImageError('La imagen no puede superar los 10 MB.');
@@ -411,6 +416,8 @@ class _AddBeachDialogState extends State<_AddBeachDialog> {
   }
 
   bool _isSupportedRasterImage(Uint8List bytes) {
+    // La extensión y el MIME del selector no son suficientes: comprobamos la
+    // firma del contenido para permitir solo formatos raster conocidos.
     final isJpeg = bytes.length >= 3 &&
         bytes[0] == 0xFF &&
         bytes[1] == 0xD8 &&
