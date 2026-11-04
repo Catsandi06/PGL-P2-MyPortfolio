@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 import '../widgets/app_drawer.dart';
@@ -91,6 +93,26 @@ class _CrudPlayasPageState extends State<CrudPlayasPage> {
     );
   }
 
+  Future<void> _confirmDeleteAll() async {
+    if (_beaches.isEmpty) {
+      return;
+    }
+
+    final shouldDelete = await showDialog<bool>(
+      context: context,
+      builder: (context) => const _DeleteAllDialog(),
+    );
+
+    if (!mounted || shouldDelete != true) {
+      return;
+    }
+
+    setState(() => _beaches.clear());
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Se han borrado todas las playas')),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -114,39 +136,71 @@ class _CrudPlayasPageState extends State<CrudPlayasPage> {
             Padding(
               padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
               child: Card(
-                color: _teal,
+                elevation: 3,
+                clipBehavior: Clip.antiAlias,
                 child: Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: Row(
-                    children: [
-                      const Icon(
-                        Icons.format_list_bulleted,
-                        color: Colors.white,
-                        size: 30,
+                  padding: EdgeInsets.zero,
+                  child: Container(
+                    decoration: const BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [_teal, Color(0xFF237A70)],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
                       ),
-                      const SizedBox(width: 12),
-                      const Expanded(
-                        child: Text(
-                          'Playas guardadas',
+                    ),
+                    padding: const EdgeInsets.all(18),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            const Icon(
+                              Icons.beach_access,
+                              color: Colors.white,
+                              size: 32,
+                            ),
+                            const SizedBox(width: 12),
+                            const Expanded(
+                              child: Text(
+                                'Playas guardadas',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                            Badge(
+                              label: Text('${_beaches.length}'),
+                              backgroundColor: _orange,
+                              textColor: Colors.white,
+                              child: const Icon(
+                                Icons.location_on_outlined,
+                                color: Colors.white,
+                                size: 28,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          'Organiza tus playas favoritas y consulta su estado.',
                           style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
+                            color: Colors.white.withValues(alpha: 0.88),
                           ),
                         ),
-                      ),
-                      // Este marcador siempre refleja la longitud actual.
-                      Badge(
-                        label: Text('${_beaches.length}'),
-                        backgroundColor: _orange,
-                        textColor: Colors.white,
-                        child: const Icon(
-                          Icons.inventory_2_outlined,
-                          color: Colors.white,
-                          size: 28,
+                        const SizedBox(height: 16),
+                        OutlinedButton.icon(
+                          onPressed: _beaches.isEmpty ? null : _confirmDeleteAll,
+                          icon: const Icon(Icons.delete_sweep_outlined),
+                          label: const Text('Borrar toda la lista'),
+                          style: OutlinedButton.styleFrom(
+                            foregroundColor: Colors.white,
+                            side: const BorderSide(color: Colors.white70),
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -413,6 +467,70 @@ class _AddBeachDialogState extends State<_AddBeachDialog> {
           onPressed: _save,
           icon: const Icon(Icons.check),
           label: const Text('Guardar'),
+        ),
+      ],
+    );
+  }
+}
+
+class _DeleteAllDialog extends StatefulWidget {
+  const _DeleteAllDialog();
+
+  @override
+  State<_DeleteAllDialog> createState() => _DeleteAllDialogState();
+}
+
+class _DeleteAllDialogState extends State<_DeleteAllDialog> {
+  static const _waitDuration = 10;
+  static const _orange = Color(0xFFC9502B);
+  Timer? _timer;
+  int _secondsRemaining = _waitDuration;
+
+  @override
+  void initState() {
+    super.initState();
+    _timer = Timer.periodic(const Duration(seconds: 1), (_) {
+      if (_secondsRemaining <= 1) {
+        _timer?.cancel();
+        if (mounted) {
+          setState(() => _secondsRemaining = 0);
+        }
+      } else if (mounted) {
+        setState(() => _secondsRemaining--);
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final canDelete = _secondsRemaining == 0;
+
+    return AlertDialog(
+      icon: const Icon(Icons.warning_amber_rounded, color: _orange, size: 42),
+      title: const Text('¿Borrar todas las playas?'),
+      content: Text(
+        'Esta acción eliminará todas las playas guardadas y no se puede deshacer.\n\n'
+        'Por seguridad, el botón se activará en $_secondsRemaining segundos.',
+        textAlign: TextAlign.center,
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(false),
+          child: const Text('Cancelar'),
+        ),
+        FilledButton.icon(
+          onPressed: canDelete ? () => Navigator.of(context).pop(true) : null,
+          icon: const Icon(Icons.delete_forever),
+          label: Text(
+            canDelete ? 'Borrar todo' : 'Esperar ($_secondsRemaining)',
+          ),
+          style: FilledButton.styleFrom(backgroundColor: _orange),
         ),
       ],
     );
