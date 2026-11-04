@@ -42,6 +42,7 @@ dependencies:
   go_router: ^18.1.2
   qr_flutter: ^4.1.0
   image_picker: ^1.2.4
+  package_info_plus: ^8.3.1
 
 dev_dependencies:
   flutter_test:
@@ -69,6 +70,7 @@ flutter:
   assets:
     - assets/images/home_bg.jpg
     - assets/images/Sandi_proto.jpg
+    - CHANGELOG.md
 
   # To add assets to your application, add an assets section, like this:
   # assets:
