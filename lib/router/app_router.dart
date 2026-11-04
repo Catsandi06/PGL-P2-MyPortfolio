@@ -18,7 +18,7 @@ final appRouter = GoRouter(
       builder: (context, state) => const PortfolioPage(),
     ),
     GoRoute(
-      path: '/elementos',
+      path: '/crud_playas',
       builder: (context, state) => const CrudPlayasPage(),
     ),
   ],
