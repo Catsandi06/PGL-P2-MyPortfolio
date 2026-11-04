@@ -120,9 +120,9 @@ class AppDrawer extends StatelessWidget {
           ),
           _DrawerItem(
             icon: Icons.checklist,
-            label: 'Mis elementos',
-            location: '/elementos',
-            selected: currentLocation == '/elementos',
+            label: 'Lista de Playas',
+            location: '/crud_playas',
+            selected: currentLocation == '/crud_playas',
           ),
         ],
       ),
