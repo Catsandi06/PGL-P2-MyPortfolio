@@ -1,6 +1,8 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:image_picker/image_picker.dart';
 
 import '../widgets/app_drawer.dart';
 
@@ -19,6 +21,7 @@ class Beach {
     required this.description,
     required this.category,
     required this.imageUrl,
+    this.imageBytes,
     required this.isClean,
     required this.approximatePeople,
   });
@@ -27,6 +30,7 @@ class Beach {
   final String description;
   final String category;
   final String imageUrl;
+  final Uint8List? imageBytes;
   final bool isClean;
   final int approximatePeople;
 }
@@ -220,7 +224,14 @@ class _CrudPlayasPageState extends State<CrudPlayasPage> {
                             contentPadding: const EdgeInsets.all(10),
                             leading: ClipRRect(
                               borderRadius: BorderRadius.circular(10),
-                              child: beach.imageUrl.isEmpty
+                              child: beach.imageBytes != null
+                                  ? Image.memory(
+                                      beach.imageBytes!,
+                                      width: 68,
+                                      height: 68,
+                                      fit: BoxFit.cover,
+                                    )
+                                  : beach.imageUrl.isEmpty
                                   ? Image.asset(
                                       _fallbackImageForCategory(beach.category),
                                       width: 68,
@@ -325,8 +336,11 @@ class _AddBeachDialogState extends State<_AddBeachDialog> {
   final _descriptionController = TextEditingController();
   final _imageUrlController = TextEditingController();
   final _peopleController = TextEditingController(text: '0');
+  final _picker = ImagePicker();
   String _category = beachCategories.first;
   bool _isClean = true;
+  Uint8List? _imageBytes;
+  String? _selectedImageName;
 
   @override
   void dispose() {
@@ -348,10 +362,79 @@ class _AddBeachDialogState extends State<_AddBeachDialog> {
         description: _descriptionController.text.trim(),
         category: _category,
         imageUrl: _imageUrlController.text.trim(),
+        imageBytes: _imageBytes,
         isClean: _isClean,
         approximatePeople: int.parse(_peopleController.text.trim()),
       ),
     );
+  }
+
+  Future<void> _pickImage() async {
+    try {
+      final pickedFile = await _picker.pickImage(
+        source: ImageSource.gallery,
+        maxWidth: 2048,
+        maxHeight: 2048,
+        imageQuality: 85,
+        requestFullMetadata: false,
+      );
+
+      if (pickedFile == null) {
+        return;
+      }
+
+      final bytes = await pickedFile.readAsBytes();
+      if (bytes.length > 10 * 1024 * 1024) {
+        _showImageError('La imagen no puede superar los 10 MB.');
+        return;
+      }
+
+      if (!_isSupportedRasterImage(bytes)) {
+        _showImageError('Solo se aceptan imágenes JPEG, PNG o WebP.');
+        return;
+      }
+
+      if (!mounted) {
+        return;
+      }
+
+      setState(() {
+        _imageBytes = bytes;
+        _selectedImageName = pickedFile.name;
+        _imageUrlController.clear();
+      });
+    } on PlatformException {
+      _showImageError('No se pudo abrir el selector de imágenes.');
+    } on Exception {
+      _showImageError('No se pudo leer la imagen seleccionada.');
+    }
+  }
+
+  bool _isSupportedRasterImage(Uint8List bytes) {
+    final isJpeg = bytes.length >= 3 &&
+        bytes[0] == 0xFF &&
+        bytes[1] == 0xD8 &&
+        bytes[2] == 0xFF;
+    final isPng = bytes.length >= 8 &&
+        bytes[0] == 0x89 &&
+        bytes[1] == 0x50 &&
+        bytes[2] == 0x4E &&
+        bytes[3] == 0x47 &&
+        bytes[4] == 0x0D &&
+        bytes[5] == 0x0A &&
+        bytes[6] == 0x1A &&
+        bytes[7] == 0x0A;
+    final isWebp = bytes.length >= 12 &&
+        String.fromCharCodes(bytes.sublist(0, 4)) == 'RIFF' &&
+        String.fromCharCodes(bytes.sublist(8, 12)) == 'WEBP';
+    return isJpeg || isPng || isWebp;
+  }
+
+  void _showImageError(String message) {
+    if (!mounted) {
+      return;
+    }
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
   }
 
   @override
@@ -415,6 +498,14 @@ class _AddBeachDialogState extends State<_AddBeachDialog> {
               TextFormField(
                 controller: _imageUrlController,
                 keyboardType: TextInputType.url,
+                onChanged: (value) {
+                  if (value.isNotEmpty && _imageBytes != null) {
+                    setState(() {
+                      _imageBytes = null;
+                      _selectedImageName = null;
+                    });
+                  }
+                },
                 decoration: const InputDecoration(
                   labelText: 'URL de imagen (opcional)',
                   hintText: 'https://ejemplo.com/playa.jpg',
@@ -429,6 +520,25 @@ class _AddBeachDialogState extends State<_AddBeachDialog> {
                   return null;
                 },
               ),
+              const SizedBox(height: 8),
+              OutlinedButton.icon(
+                onPressed: _pickImage,
+                icon: const Icon(Icons.upload_file),
+                label: Text(
+                  _selectedImageName == null
+                      ? 'Seleccionar imagen del dispositivo'
+                      : 'Imagen seleccionada',
+                ),
+              ),
+              if (_selectedImageName != null) ...[
+                const SizedBox(height: 6),
+                Text(
+                  'Archivo validado: $_selectedImageName',
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: Theme.of(context).textTheme.bodySmall,
+                ),
+              ],
               const SizedBox(height: 12),
               TextFormField(
                 controller: _peopleController,
