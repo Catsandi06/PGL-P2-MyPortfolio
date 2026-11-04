@@ -106,7 +106,7 @@ class AppDrawer extends StatelessWidget {
             ),
           ),
           _DrawerItem(
-            // Cada opción lleva a una de las dos rutas principales.
+            // Cada opción lleva a una de las rutas principales.
             icon: Icons.home,
             label: 'Bienvenida',
             location: '/bienvenida',
@@ -117,6 +117,12 @@ class AppDrawer extends StatelessWidget {
             label: 'Portfolio',
             location: '/portfolio',
             selected: currentLocation == '/portfolio',
+          ),
+          _DrawerItem(
+            icon: Icons.checklist,
+            label: 'Mis elementos',
+            location: '/elementos',
+            selected: currentLocation == '/elementos',
           ),
         ],
       ),
