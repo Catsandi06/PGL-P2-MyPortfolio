@@ -175,6 +175,10 @@ muestre el nuevo icono.
   <img src="docs/screenshots/portfolio_hobbies.png" width="200" alt="Portfolio - Mis hobbies" />
   <img src="docs/screenshots/portfolio_repositorio.png" width="200" alt="Portfolio - Mi repositorio" />
   <img src="docs/screenshots/memes_gatos.png" width="200" alt="Memes de gatos" />
+  <img src="docs/screenshots/drawer_crud_playas.png" width="200" alt="Drawer con Lista de Playas" />
+  <img src="docs/screenshots/crud_playas_lista.png" width="200" alt="Lista dinámica de playas" />
+  <img src="docs/screenshots/crud_playas_anadir.png" width="200" alt="Formulario para añadir una playa" />
+  <img src="docs/screenshots/crud_playas_borrar.png" width="200" alt="Confirmación de borrado total" />
 </p>
 
 | Pantalla | Descripción |
@@ -184,6 +188,10 @@ muestre el nuevo icono.
 | Portfolio - Mis hobbies | Pestaña de hobbies del portfolio |
 | Portfolio - Mi repositorio | Pestaña de repositorio con QR de GitHub |
 | Memes de gatos | Pantalla de memes de gatos programadores (accesible desde el hobby "Los gatos") |
+| Drawer - Lista de Playas | Acceso del menú lateral al CRUD de playas |
+| Lista de playas | Contador, tarjetas, categorías, limpieza, aforo y borrado individual |
+| Añadir playa | Modal con formulario, selector de categoría, imagen, aforo y limpieza |
+| Borrar toda la lista | Confirmación y cuenta atrás de seguridad antes de eliminar |
 
 ## Instalación y ejecución
 
