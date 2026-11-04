@@ -11,7 +11,7 @@ Aplicación Flutter desarrollada para la asignatura **Programación Multimedia y
 - **Galería de memes** - Pantalla con gifs de gatos programadores cargados desde Giphy
 - **Código QR** - Generado con `qr_flutter` que enlaza al perfil de GitHub
 - **CRUD de playas** - Lista dinámica con alta desde un `Dialog`, imagen por URL o galería, categoría, limpieza, aforo aproximado, borrado individual, borrado total protegido y contador
-- **Navegación con GoRouter** - Rutas centralizadas (`/bienvenida`, `/portfolio` y `/elementos`)
+- **Navegación con GoRouter** - Rutas centralizadas (`/bienvenida`, `/portfolio` y `/crud_playas`)
 
 ## Tecnologías utilizadas
 
@@ -58,21 +58,103 @@ Pantalla principal con fondo de playa, menú hamburguesa para abrir el drawer, t
 
 ### Menú Lateral (Drawer)
 
-Muestra información del usuario (Nichel Morales Hernández - USR3742), avatar de GitHub e icono de la app. Permite navegar entre "Bienvenida", "Portfolio" y "Mis elementos".
+Muestra información del usuario (Nichel Morales Hernández - USR3742), avatar de GitHub e icono de la app. Permite navegar entre "Bienvenida", "Portfolio" y "Lista de Playas".
 
 ### Pantalla de Mis playas
 
-La opción **Mis elementos** del Drawer abre una lista dinámica construida con
-`ListView.builder`. El botón **Añadir playa** muestra un `showDialog` con un
-`Form` que valida nombre, descripción breve, categoría, URL de imagen o imagen
-seleccionada desde la galería, limpieza y aforo aproximado. Las imágenes
-seleccionadas se limitan a 10 MB y se validan por firma binaria para aceptar
-solo JPEG, PNG o WebP; se guardan en memoria, sin usar rutas o nombres
-controlados por el usuario. Al guardar, el diálogo devuelve una instancia de
-`Beach` con `Navigator.pop` y la pantalla la añade al estado mediante
-`setState`. Cada fila muestra la imagen, el estado de limpieza y el número de
-personas aproximado, además de tener un botón de borrado y un marcador con el
-total de playas.
+La opción **Lista de Playas** del Drawer abre la ruta `/crud_playas` y muestra
+una lista dinámica construida con `ListView.builder`. El botón **Añadir playa**
+abre un `showDialog` con un `Form` que valida nombre, descripción breve,
+categoría, imagen, limpieza y aforo aproximado.
+
+Las imágenes pueden introducirse de dos formas:
+
+1. **URL remota**: debe usar `https://`.
+2. **Galería del dispositivo**: `image_picker` devuelve un `XFile`, que se lee
+   en memoria como bytes.
+
+Las imágenes locales tienen un límite de 10 MB y se comprueba su firma binaria
+para aceptar únicamente JPEG, PNG o WebP. No se ejecutan archivos, no se usan
+sus rutas para acceder al sistema y no se confía solo en la extensión o en el
+MIME declarado por el dispositivo. Si no se selecciona una imagen, se muestra
+una imagen local de respaldo según la categoría.
+
+## Explicación del CRUD paso a paso
+
+### 1. Modelo de datos
+
+`Beach` es una clase inmutable que representa una playa. Contiene:
+
+| Propiedad | Tipo | Uso |
+| --- | --- | --- |
+| `name` | `String` | Nombre de la playa |
+| `description` | `String` | Descripción breve |
+| `category` | `String` | Urbana, natural, familiar o deportiva |
+| `imageUrl` | `String` | URL `https` opcional |
+| `imageBytes` | `Uint8List?` | Imagen local temporal en memoria |
+| `isClean` | `bool` | Estado del checkbox de limpieza |
+| `approximatePeople` | `int` | Número aproximado de personas |
+
+### 2. Estado y lista dinámica
+
+`CrudPlayasPage` es un `StatefulWidget` porque la lista cambia durante la
+ejecución. `_beaches` guarda las playas actuales. Cuando se añade o elimina
+una playa, `setState` notifica a Flutter y reconstruye únicamente la interfaz
+necesaria. El `Badge` superior utiliza `_beaches.length`, por lo que el total
+se actualiza automáticamente.
+
+### 3. Alta mediante modal
+
+`_showAddBeachDialog` abre `_AddBeachDialog` con `showDialog`. El formulario
+mantiene sus propios controladores y valida los campos antes de guardar:
+
+- Nombre y descripción no pueden estar vacíos.
+- La URL, si existe, debe empezar por `https://`.
+- El aforo debe ser un número entero igual o mayor que cero.
+- La imagen local debe superar las comprobaciones de tamaño y formato.
+
+Cuando todo es válido, `Navigator.pop` devuelve un objeto `Beach`. La pantalla
+principal lo recibe y lo añade a `_beaches` mediante `setState`.
+
+### 4. Imágenes
+
+La tarjeta decide qué widget utilizar:
+
+- `Image.memory` si existe `imageBytes`.
+- `Image.network` si se indicó una URL.
+- `Image.asset` como respaldo local.
+
+Si una imagen remota falla, `errorBuilder` evita que se rompa la tarjeta y
+muestra el respaldo local.
+
+### 5. Borrado individual y total
+
+El icono de papelera elimina una playa concreta por su índice y muestra un
+`SnackBar` informativo. **Borrar toda la lista** primero abre un diálogo de
+confirmación. Su botón permanece deshabilitado durante 10 segundos mediante un
+`Timer`; al llegar a cero se habilita y solo entonces `clear()` vacía la lista.
+El temporizador se cancela en `dispose` para no dejar tareas activas cuando el
+diálogo se cierra.
+
+### 6. Navegación
+
+`lib/router/app_router.dart` declara `/crud_playas` y construye
+`CrudPlayasPage`. `AppDrawer` contiene el elemento **Lista de Playas**, cierra
+el menú y navega con `context.go`. Así todas las pantallas usan el mismo
+sistema de navegación.
+
+### 7. Icono de la aplicación
+
+La imagen `assets/icon/logo_sandi.jpg` se configura con
+`flutter_launcher_icons`. El comando:
+
+```bash
+dart run flutter_launcher_icons
+```
+
+genera las distintas resoluciones Android y el conjunto `AppIcon` de iOS.
+Después se debe reinstalar la aplicación en el dispositivo para que el sistema
+muestre el nuevo icono.
 
 ### Pantalla de Portfolio
 
@@ -82,19 +164,6 @@ total de playas.
 - **Hobbies**: Grid con 8 hobbies diferentes (Informática, Música, Gatos, Consolas retro, Furry, Coches, Impresión 3D, Viajes)
 - **Repositorio**: Imagen de Sandi Proto, descripción y código QR hacia GitHub
 - **Memes de gatos**: Pantalla secundaria accesible desde el hobby "Los gatos"
-
-### Pantalla de Mis playas
-
-La opción **Mis elementos** del Drawer gestiona playas con una lista dinámica
-construida mediante `ListView.builder`. El botón **Añadir playa** abre un
-`showDialog` con un `Form` validado para introducir nombre, descripción breve,
-categoría, URL de imagen, número aproximado de personas y un `Checkbox` que
-indica si la playa está limpia. Si no se proporciona una URL, se utiliza una
-imagen local de respaldo según la categoría. Al guardar, el diálogo devuelve
-una instancia de `Beach` mediante `Navigator.pop`; `setState` la incorpora a
-la lista. Cada tarjeta muestra toda la información y permite borrar la playa.
-El botón **Borrar toda la lista** solicita confirmación y mantiene su acción
-desactivada durante 10 segundos para evitar eliminaciones accidentales.
 
 ## Capturas de pantalla
 
