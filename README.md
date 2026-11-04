@@ -10,7 +10,7 @@ Aplicación Flutter desarrollada para la asignatura **Programación Multimedia y
 - **Hobbies interactivos** - Grid con 8 hobbies diferentes; al pulsar "Los gatos" accede a una galería de memes
 - **Galería de memes** - Pantalla con gifs de gatos programadores cargados desde Giphy
 - **Código QR** - Generado con `qr_flutter` que enlaza al perfil de GitHub
-- **CRUD de playas** - Lista dinámica con alta desde un `Dialog`, imagen opcional, categoría, limpieza, aforo aproximado, borrado y contador total
+- **CRUD de playas** - Lista dinámica con alta desde un `Dialog`, imagen opcional, categoría, limpieza, aforo aproximado, borrado individual, borrado total protegido y contador
 - **Navegación con GoRouter** - Rutas centralizadas (`/bienvenida`, `/portfolio` y `/elementos`)
 
 ## Tecnologías utilizadas
@@ -88,6 +88,8 @@ indica si la playa está limpia. Si no se proporciona una URL, se utiliza una
 imagen local de respaldo según la categoría. Al guardar, el diálogo devuelve
 una instancia de `Beach` mediante `Navigator.pop`; `setState` la incorpora a
 la lista. Cada tarjeta muestra toda la información y permite borrar la playa.
+El botón **Borrar toda la lista** solicita confirmación y mantiene su acción
+desactivada durante 10 segundos para evitar eliminaciones accidentales.
 
 ## Capturas de pantalla
 
