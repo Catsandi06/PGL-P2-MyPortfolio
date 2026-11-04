@@ -14,115 +14,133 @@ class AppDrawer extends StatelessWidget {
     final currentLocation = GoRouterState.of(context).uri.path;
 
     return Drawer(
-      child: ListView(
-        padding: EdgeInsets.zero,
+      child: Column(
         children: [
-          // La cabecera identifica la aplicación y muestra el usuario activo.
-          DrawerHeader(
-            decoration: const BoxDecoration(color: _teal),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+          Expanded(
+            child: ListView(
+              padding: EdgeInsets.zero,
               children: [
-                Row(
-                  children: [
-                    // Icono de la aplicación dentro de un fondo naranja.
-                    Container(
-                      padding: const EdgeInsets.all(8),
-                      decoration: BoxDecoration(
-                        color: _orange,
-                        borderRadius: BorderRadius.circular(14),
-                      ),
-                      child: const Icon(
-                        Icons.beach_access,
-                        color: Colors.white,
-                        size: 28,
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-                    Flexible(
-                      child: Text(
-                        'Playas Canarias',
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                const Spacer(),
-                // No usamos const porque Image.network se carga en ejecución.
-                Row(
-                  children: [
-                    CircleAvatar(
-                      radius: 24,
-                      // ClipOval recorta la imagen cuadrada con la misma forma
-                      // circular que el avatar.
-                      child: ClipOval(
-                        child: Image.network(
-                          'https://github.com/Catsandi06.png',
-                          width: 48,
-                          height: 48,
-                          fit: BoxFit.cover,
-                          // Si la imagen remota falla, mostramos un respaldo.
-                          errorBuilder: (context, error, stackTrace) =>
-                              const Icon(Icons.person, color: _teal, size: 30),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-                    // Flexible limita el texto al espacio restante del drawer.
-                    Flexible(
-                      child: const Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                // La cabecera identifica la aplicación y muestra el usuario activo.
+                DrawerHeader(
+                  decoration: const BoxDecoration(color: _teal),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
                         children: [
-                          Text(
-                            'Nichel Morales Hernández',
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
+                          // Icono de la aplicación dentro de un fondo naranja.
+                          Container(
+                            padding: const EdgeInsets.all(8),
+                            decoration: BoxDecoration(
+                              color: _orange,
+                              borderRadius: BorderRadius.circular(14),
+                            ),
+                            child: const Icon(
+                              Icons.beach_access,
                               color: Colors.white,
-                              fontSize: 17,
-                              fontWeight: FontWeight.bold,
+                              size: 28,
                             ),
                           ),
-                          SizedBox(height: 2),
-                          Text(
-                            'USR3742',
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
-                              color: Colors.white70,
-                              fontSize: 13,
+                          const SizedBox(width: 12),
+                          Flexible(
+                            child: Text(
+                              'Playas Canarias',
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              style: Theme.of(context).textTheme.titleLarge
+                                  ?.copyWith(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                             ),
                           ),
                         ],
                       ),
-                    ),
-                  ],
+                      const Spacer(),
+                      // No usamos const porque Image.network se carga en ejecución.
+                      Row(
+                        children: [
+                          CircleAvatar(
+                            radius: 24,
+                            // ClipOval recorta la imagen cuadrada con la misma forma
+                            // circular que el avatar.
+                            child: ClipOval(
+                              child: Image.network(
+                                'https://github.com/Catsandi06.png',
+                                width: 48,
+                                height: 48,
+                                fit: BoxFit.cover,
+                                // Si la imagen remota falla, mostramos un respaldo.
+                                errorBuilder: (context, error, stackTrace) =>
+                                    const Icon(
+                                      Icons.person,
+                                      color: _teal,
+                                      size: 30,
+                                    ),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          // Flexible limita el texto al espacio restante del drawer.
+                          const Flexible(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Nichel Morales Hernández',
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 17,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                SizedBox(height: 2),
+                                Text(
+                                  'USR3742',
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                    color: Colors.white70,
+                                    fontSize: 13,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+                _DrawerItem(
+                  // Cada opción lleva a una de las rutas principales.
+                  icon: Icons.home,
+                  label: 'Bienvenida',
+                  location: '/bienvenida',
+                  selected: currentLocation == '/bienvenida',
+                ),
+                _DrawerItem(
+                  icon: Icons.work_outline,
+                  label: 'Portfolio',
+                  location: '/portfolio',
+                  selected: currentLocation == '/portfolio',
+                ),
+                _DrawerItem(
+                  icon: Icons.checklist,
+                  label: 'Lista de Playas',
+                  location: '/crud_playas',
+                  selected: currentLocation == '/crud_playas',
                 ),
               ],
             ),
           ),
-          _DrawerItem(
-            // Cada opción lleva a una de las rutas principales.
-            icon: Icons.home,
-            label: 'Bienvenida',
-            location: '/bienvenida',
-            selected: currentLocation == '/bienvenida',
-          ),
-          _DrawerItem(
-            icon: Icons.work_outline,
-            label: 'Portfolio',
-            location: '/portfolio',
-            selected: currentLocation == '/portfolio',
-          ),
-          _DrawerItem(
-            icon: Icons.checklist,
-            label: 'Lista de Playas',
-            location: '/crud_playas',
-            selected: currentLocation == '/crud_playas',
+          const Padding(
+            padding: EdgeInsets.fromLTRB(16, 8, 16, 20),
+            child: Text(
+              'Versión 1.1.4+7',
+              style: TextStyle(color: Colors.grey, fontSize: 12),
+            ),
           ),
         ],
       ),
