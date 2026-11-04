@@ -65,7 +65,7 @@ Muestra información del usuario (Nichel Morales Hernández - USR3742), avatar d
 
 La opción **Lista de Playas** del Drawer abre la ruta `/crud_playas` y muestra
 una lista dinámica construida con `ListView.builder`. El botón **Añadir playa**
-abre un `showDialog` con un `Form` que valida nombre, descripción breve,
+abre un `showDialog` con un `Form` que válida nombre, descripción breve,
 categoría, imagen, limpieza y aforo aproximado.
 
 Las imágenes pueden introducirse de dos formas:
@@ -107,7 +107,7 @@ se actualiza automáticamente.
 ### 3. Alta mediante modal
 
 `_showAddBeachDialog` abre `_AddBeachDialog` con `showDialog`. El formulario
-mantiene sus propios controladores y valida los campos antes de guardar:
+mantiene sus propios controladores y válida los campos antes de guardar:
 
 - Nombre y descripción no pueden estar vacíos.
 - La URL, si existe, debe empezar por `https://`.
@@ -163,6 +163,17 @@ dart run flutter_launcher_icons
 Genera las distintas resoluciones Android y el conjunto `AppIcon` de iOS.
 Después se debe reinstalar la aplicación en el dispositivo para que el sistema
 muestre el nuevo icono.
+
+### 9. Versión y changelog
+
+La versión visible al final del Drawer se obtiene de la información instalada
+del paquete, por lo que se actualiza automáticamente al cambiar `version:` en
+`pubspec.yaml`. Al tocarla se abre el contenido de `CHANGELOG.md`, donde se
+documentan los cambios agrupados por versión. Para publicar una nueva versión:
+
+1. Actualiza `version:` en `pubspec.yaml`.
+2. Añade una sección con esa misma versión al principio de `CHANGELOG.md`.
+3. Ejecuta `flutter pub get` y vuelve a compilar la aplicación.
 
 ### Pantalla de Portfolio
 
