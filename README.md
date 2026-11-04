@@ -20,6 +20,7 @@ Aplicación Flutter desarrollada para la asignatura **Programación Multimedia y
 - [go_router](https://pub.dev/packages/go_router) ^16.2.1 - Navegación declarativa
 - [qr_flutter](https://pub.dev/packages/qr_flutter) ^4.1.0 - Generación de códigos QR
 - [image_picker](https://pub.dev/packages/image_picker) ^1.2.4 - Selección segura de imágenes
+- [flutter_launcher_icons](https://pub.dev/packages/flutter_launcher_icons) ^0.14.4 - Generación del icono de la aplicación
 
 ## Estructura del proyecto
 
