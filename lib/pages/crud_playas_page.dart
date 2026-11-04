@@ -29,14 +29,14 @@ class Beach {
   final int approximatePeople;
 }
 
-class ItemsPage extends StatefulWidget {
-  const ItemsPage({super.key});
+class CrudPlayasPage extends StatefulWidget {
+  const CrudPlayasPage({super.key});
 
   @override
-  State<ItemsPage> createState() => _ItemsPageState();
+  State<CrudPlayasPage> createState() => _CrudPlayasPageState();
 }
 
-class _ItemsPageState extends State<ItemsPage> {
+class _CrudPlayasPageState extends State<CrudPlayasPage> {
   static const _teal = Color(0xFF2A9D8F);
   static const _orange = Color(0xFFC9502B);
   static const _surface = Color(0xFFF4F8F7);
