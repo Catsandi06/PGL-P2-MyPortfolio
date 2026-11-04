@@ -32,7 +32,7 @@ lib/
 └── pages/
     ├── welcome_page.dart     # Pantalla de bienvenida
     ├── portfolio_page.dart   # Pantalla de portfolio (perfil, hobbies, repositorio y memes)
-    └── items_page.dart       # CRUD de playas y formulario modal
+    └── crud_playas_page.dart # CRUD de playas y formulario modal
 ```
 
 ## Recursos

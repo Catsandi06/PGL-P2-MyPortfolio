@@ -1,7 +1,7 @@
 import 'package:go_router/go_router.dart';
 
 import '../pages/portfolio_page.dart';
-import '../pages/items_page.dart';
+import '../pages/crud_playas_page.dart';
 import '../pages/welcome_page.dart';
 
 // Define las pantallas accesibles desde el drawer.
@@ -19,7 +19,7 @@ final appRouter = GoRouter(
     ),
     GoRoute(
       path: '/elementos',
-      builder: (context, state) => const ItemsPage(),
+      builder: (context, state) => const CrudPlayasPage(),
     ),
   ],
 );
