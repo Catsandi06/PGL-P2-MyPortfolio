@@ -10,7 +10,8 @@ Aplicación Flutter desarrollada para la asignatura **Programación Multimedia y
 - **Hobbies interactivos** - Grid con 8 hobbies diferentes; al pulsar "Los gatos" accede a una galería de memes
 - **Galería de memes** - Pantalla con gifs de gatos programadores cargados desde Giphy
 - **Código QR** - Generado con `qr_flutter` que enlaza al perfil de GitHub
-- **Navegación con GoRouter** - Rutas centralizadas (`/bienvenida` y `/portfolio`)
+- **CRUD de elementos** - Lista dinámica con alta desde un `Dialog`, categoría con imagen, borrado y contador total
+- **Navegación con GoRouter** - Rutas centralizadas (`/bienvenida`, `/portfolio` y `/elementos`)
 
 ## Tecnologías utilizadas
 
@@ -54,7 +55,17 @@ Pantalla principal con fondo de playa, menú hamburguesa para abrir el drawer, t
 
 ### Menú Lateral (Drawer)
 
-Muestra información del usuario (Nichel Morales Hernández - USR3742), avatar de GitHub e icono de la app. Permite navegar entre "Bienvenida" y "Portfolio".
+Muestra información del usuario (Nichel Morales Hernández - USR3742), avatar de GitHub e icono de la app. Permite navegar entre "Bienvenida", "Portfolio" y "Mis elementos".
+
+### Pantalla de Mis elementos
+
+La opción **Mis elementos** del Drawer abre una lista dinámica construida con
+`ListView.builder`. El botón **Añadir elemento** muestra un `showDialog` con un
+`Form` que valida nombre y descripción breve y permite elegir una categoría.
+Al guardar, el diálogo devuelve un `ListItem` con `Navigator.pop` y la pantalla
+lo añade al estado mediante `setState`. La categoría seleccionada determina la
+imagen local que aparece junto al elemento. Cada fila tiene un botón de borrado
+y el marcador superior muestra en todo momento el número total de elementos.
 
 ### Pantalla de Portfolio
 

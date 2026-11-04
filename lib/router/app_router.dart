@@ -1,9 +1,10 @@
 import 'package:go_router/go_router.dart';
 
 import '../pages/portfolio_page.dart';
+import '../pages/items_page.dart';
 import '../pages/welcome_page.dart';
 
-// Define las únicas pantallas accesibles desde el drawer.
+// Define las pantallas accesibles desde el drawer.
 final appRouter = GoRouter(
   // La aplicación comienza mostrando la pantalla de bienvenida.
   initialLocation: '/bienvenida',
@@ -15,6 +16,10 @@ final appRouter = GoRouter(
     GoRoute(
       path: '/portfolio',
       builder: (context, state) => const PortfolioPage(),
+    ),
+    GoRoute(
+      path: '/elementos',
+      builder: (context, state) => const ItemsPage(),
     ),
   ],
 );
