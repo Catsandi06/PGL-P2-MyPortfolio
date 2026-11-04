@@ -1,11 +1,11 @@
 # Playas Canarias - My Portfolio
 
-Aplicación Flutter desarrollada para la asignatura **Programación Multimedia y Dispositivos Móviles (PGL)**. Portfolio personal con navegación mediante menú lateral (Drawer) y gestión de rutas con `go_router`.
+Aplicación Flutter desarrollada para la asignatura **Programación Multimedia y Dispositivos Móviles (PGL)**. Incluye un portfolio personal y un CRUD local para gestionar playas, con navegación mediante menú lateral (`Drawer`) y rutas declarativas con `go_router`.
 
 ## Características
 
 - **Menú lateral (Drawer)** - Navegación entre las distintas pantallas de la aplicación
-- **Pantalla de Bienvenida** - Pantalla principal con imagen de fondo, saludo personalizado, buscador y barra de navegación inferior
+- **Pantalla de Bienvenida** - Pantalla principal con imagen de fondo, saludo personalizado, buscador visual y barra de navegación inferior
 - **Pantalla de Portfolio** - Sección personal con información del alumno, lista de hobbies interactivos y repositorio GitHub
 - **Hobbies interactivos** - Grid con 8 hobbies diferentes; al pulsar "Los gatos" accede a una galería de memes
 - **Galería de memes** - Pantalla con gifs de gatos programadores cargados desde Giphy
@@ -15,9 +15,10 @@ Aplicación Flutter desarrollada para la asignatura **Programación Multimedia y
 
 ## Tecnologías utilizadas
 
-- [Flutter](https://flutter.dev/) - SDK ^3.13.5
+- [Flutter](https://flutter.dev/) - Aplicación probada con Flutter 3.47.9
+- [Dart](https://dart.dev/) - SDK `^3.13.5`
 - [Material Design 3](https://m3.material.io/)
-- [go_router](https://pub.dev/packages/go_router) ^16.2.1 - Navegación declarativa
+- [go_router](https://pub.dev/packages/go_router) ^18.1.2 - Navegación declarativa
 - [qr_flutter](https://pub.dev/packages/qr_flutter) ^4.1.0 - Generación de códigos QR
 - [image_picker](https://pub.dev/packages/image_picker) ^1.2.4 - Selección segura de imágenes
 - [flutter_launcher_icons](https://pub.dev/packages/flutter_launcher_icons) ^0.14.4 - Generación del icono de la aplicación
@@ -60,7 +61,7 @@ Pantalla principal con fondo de playa, menú hamburguesa para abrir el drawer, t
 
 Muestra información del usuario (Nichel Morales Hernández - USR3742), avatar de GitHub e icono de la app. Permite navegar entre "Bienvenida", "Portfolio" y "Lista de Playas".
 
-### Pantalla de Mis playas
+### Pantalla de Lista de Playas
 
 La opción **Lista de Playas** del Drawer abre la ruta `/crud_playas` y muestra
 una lista dinámica construida con `ListView.builder`. El botón **Añadir playa**
@@ -85,15 +86,15 @@ una imagen local de respaldo según la categoría.
 
 `Beach` es una clase inmutable que representa una playa. Contiene:
 
-| Propiedad | Tipo | Uso |
-| --- | --- | --- |
-| `name` | `String` | Nombre de la playa |
-| `description` | `String` | Descripción breve |
-| `category` | `String` | Urbana, natural, familiar o deportiva |
-| `imageUrl` | `String` | URL `https` opcional |
-| `imageBytes` | `Uint8List?` | Imagen local temporal en memoria |
-| `isClean` | `bool` | Estado del checkbox de limpieza |
-| `approximatePeople` | `int` | Número aproximado de personas |
+| Propiedad           | Tipo         | Uso                                   |
+|---------------------|--------------|---------------------------------------|
+| `name`              | `String`     | Nombre de la playa                    |
+| `description`       | `String`     | Descripción breve                     |
+| `category`          | `String`     | Urbana, natural, familiar o deportiva |
+| `imageUrl`          | `String`     | URL `https` opcional                  |
+| `imageBytes`        | `Uint8List?` | Imagen local temporal en memoria      |
+| `isClean`           | `bool`       | Estado del checkbox de limpieza       |
+| `approximatePeople` | `int`        | Número aproximado de personas         |
 
 ### 2. Estado y lista dinámica
 
@@ -143,7 +144,14 @@ diálogo se cierra.
 el menú y navega con `context.go`. Así todas las pantallas usan el mismo
 sistema de navegación.
 
-### 7. Icono de la aplicación
+### 7. Datos y ciclo de vida
+
+Las playas de ejemplo y las nuevas playas se mantienen en la lista `_beaches`
+durante la ejecución de la aplicación. Actualmente no hay una base de datos ni
+persistencia en disco: al cerrar o reiniciar la aplicación, la lista vuelve a
+los datos iniciales definidos en `CrudPlayasPage`.
+
+### 8. Icono de la aplicación
 
 La imagen `assets/icon/logo_sandi.jpg` se configura con
 `flutter_launcher_icons`. El comando:
@@ -152,7 +160,7 @@ La imagen `assets/icon/logo_sandi.jpg` se configura con
 dart run flutter_launcher_icons
 ```
 
-genera las distintas resoluciones Android y el conjunto `AppIcon` de iOS.
+Genera las distintas resoluciones Android y el conjunto `AppIcon` de iOS.
 Después se debe reinstalar la aplicación en el dispositivo para que el sistema
 muestre el nuevo icono.
 
@@ -169,7 +177,7 @@ muestre el nuevo icono.
 
 ### Android
 
-<p align="center">
+<div style="margin: 5px">
   <img src="docs/screenshots/bienvenida.png" width="200" alt="Pantalla de Bienvenida" />
   <img src="docs/screenshots/drawer.png" width="200" alt="Drawer abierto" />
   <img src="docs/screenshots/portfolio_hobbies.png" width="200" alt="Portfolio - Mis hobbies" />
@@ -179,25 +187,26 @@ muestre el nuevo icono.
   <img src="docs/screenshots/crud_playas_lista.png" width="200" alt="Lista dinámica de playas" />
   <img src="docs/screenshots/crud_playas_anadir.png" width="200" alt="Formulario para añadir una playa" />
   <img src="docs/screenshots/crud_playas_borrar.png" width="200" alt="Confirmación de borrado total" />
-</p>
+</div>
 
-| Pantalla | Descripción |
-| --- | --- |
-| Bienvenida | Pantalla principal con imagen de fondo de playa |
-| Drawer abierto | Menú lateral con información del usuario |
-| Portfolio - Mis hobbies | Pestaña de hobbies del portfolio |
-| Portfolio - Mi repositorio | Pestaña de repositorio con QR de GitHub |
-| Memes de gatos | Pantalla de memes de gatos programadores (accesible desde el hobby "Los gatos") |
-| Drawer - Lista de Playas | Acceso del menú lateral al CRUD de playas |
-| Lista de playas | Contador, tarjetas, categorías, limpieza, aforo y borrado individual |
-| Añadir playa | Modal con formulario, selector de categoría, imagen, aforo y limpieza |
-| Borrar toda la lista | Confirmación y cuenta atrás de seguridad antes de eliminar |
+| Pantalla                   | Descripción                                                                     |
+|----------------------------|---------------------------------------------------------------------------------|
+| Bienvenida                 | Pantalla principal con imagen de fondo de playa                                 |
+| Drawer abierto             | Menú lateral con información del usuario                                        |
+| Portfolio - Mis hobbies    | Pestaña de hobbies del portfolio                                                |
+| Portfolio - Mi repositorio | Pestaña de repositorio con QR de GitHub                                         |
+| Memes de gatos             | Pantalla de memes de gatos programadores (accesible desde el hobby "Los gatos") |
+| Drawer - Lista de Playas   | Acceso del menú lateral al CRUD de playas                                       |
+| Lista de playas            | Contador, tarjetas, categorías, limpieza, aforo y borrado individual            |
+| Añadir playa               | Modal con formulario, selector de categoría, imagen, aforo y limpieza           |
+| Borrar toda la lista       | Confirmación y cuenta atrás de seguridad antes de eliminar                      |
 
 ## Instalación y ejecución
 
 ### Requisitos previos
 
-- [Flutter SDK](https://docs.flutter.dev/get-started/install) ^3.13.5
+- [Flutter SDK](https://docs.flutter.dev/get-started/install) 3.47.9 o compatible
+- Dart SDK `^3.13.5`
 - Android Studio / VS Code
 - Emulador Android o dispositivo físico
 
@@ -222,6 +231,16 @@ flutter run
 # O seleccionar dispositivo específico
 flutter run -d <device_id>
 ```
+
+### Comprobaciones
+
+```bash
+flutter analyze
+flutter test
+```
+
+El proyecto se ha validado con el análisis estático y las pruebas de widgets
+incluidas en `test/widget_test.dart`.
 
 ## Autor
 
