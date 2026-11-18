@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
+import '../services/auth_service.dart';
+
+final _authService = AuthService();
+
 class AppDrawer extends StatelessWidget {
   const AppDrawer({super.key});
 
@@ -132,6 +136,18 @@ class AppDrawer extends StatelessWidget {
                   label: 'Lista de Playas',
                   location: '/crud_playas',
                   selected: currentLocation == '/crud_playas',
+                ),
+                const Divider(height: 20),
+                ListTile(
+                  leading: const Icon(Icons.logout, color: Colors.red),
+                  title: const Text('Cerrar Sesión', style: TextStyle(color: Colors.red)),
+                  onTap: () async {
+                    Navigator.of(context).pop();
+                    await _authService.deleteToken();
+                    if (context.mounted) {
+                      context.go('/login');
+                    }
+                  },
                 ),
               ],
             ),
