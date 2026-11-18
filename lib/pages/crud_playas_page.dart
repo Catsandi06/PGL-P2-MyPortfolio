@@ -1,127 +1,97 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
 
+import '../models/beach.dart';
+import '../viewmodels/playas_viewmodel.dart';
+import '../widgets/add_beach_dialog.dart';
 import '../widgets/app_drawer.dart';
-
-/// Categorías disponibles para clasificar cada playa.
-const beachCategories = <String>[
-  'Playa urbana',
-  'Playa natural',
-  'Playa familiar',
-  'Playa deportiva',
-];
-
-/// Modelo inmutable que representa una playa creada desde el formulario.
-class Beach {
-  const Beach({
-    required this.name,
-    required this.description,
-    required this.category,
-    required this.imageUrl,
-    this.imageBytes,
-    required this.isClean,
-    required this.approximatePeople,
-  });
-
-  final String name;
-  final String description;
-  final String category;
-  final String imageUrl;
-  final Uint8List? imageBytes;
-  final bool isClean;
-  final int approximatePeople;
-}
+import '../widgets/delete_all_dialog.dart';
 
 /// Pantalla principal para consultar, crear y borrar playas.
-class CrudPlayasPage extends StatefulWidget {
+/// Esta es solo la View: consume el ViewModel a través de ChangeNotifierProvider
+/// y delega toda la lógica de negocio a los componentes correspondientes.
+class CrudPlayasPage extends StatelessWidget {
   const CrudPlayasPage({super.key});
 
   @override
-  State<CrudPlayasPage> createState() => _CrudPlayasPageState();
+  Widget build(BuildContext context) {
+    return ChangeNotifierProvider(
+      create: (_) => PlayasViewModel(),
+      child: const _CrudPlayasView(),
+    );
+  }
 }
 
-class _CrudPlayasPageState extends State<CrudPlayasPage> {
+class _CrudPlayasView extends StatelessWidget {
+  const _CrudPlayasView();
+
   static const _teal = Color(0xFF2A9D8F);
   static const _orange = Color(0xFFC9502B);
   static const _surface = Color(0xFFF4F8F7);
-
-  // La lista vive en el estado para que setState actualice la interfaz.
-  final List<Beach> _beaches = [
-    const Beach(
-      name: 'Playa de Las Canteras',
-      description: 'Una playa urbana para pasear y desconectar.',
-      category: 'Playa urbana',
-      imageUrl: '',
-      isClean: true,
-      approximatePeople: 120,
-    ),
-    const Beach(
-      name: 'Playa de Maspalomas',
-      description: 'Dunas, arena dorada y vistas al océano.',
-      category: 'Playa natural',
-      imageUrl: '',
-      isClean: true,
-      approximatePeople: 75,
-    ),
-  ];
 
   String _fallbackImageForCategory(String category) => switch (category) {
     'Playa urbana' || 'Playa familiar' => 'assets/images/home_bg.jpg',
     _ => 'assets/images/Sandi_proto.jpg',
   };
 
-  Future<void> _showAddBeachDialog() async {
+  Future<void> _showAddBeachDialog(BuildContext context) async {
+    final viewModel = context.read<PlayasViewModel>();
+    
     // El diálogo devuelve la playa mediante Navigator.pop cuando el formulario
     // supera todas sus validaciones.
     final newBeach = await showDialog<Beach>(
       context: context,
-      builder: (context) => const _AddBeachDialog(),
+      builder: (context) => const AddBeachDialog(),
     );
 
-    if (!mounted || newBeach == null) {
-      return;
+    if (context.mounted && newBeach != null) {
+      viewModel.addBeach(newBeach);
+      _showFeedback(context);
     }
-
-    setState(() => _beaches.add(newBeach));
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('«${newBeach.name}» añadida a la lista')),
-    );
   }
 
-  void _deleteBeach(int index) {
-    final deletedBeach = _beaches[index];
-    setState(() => _beaches.removeAt(index));
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('«${deletedBeach.name}» eliminada')),
-    );
+  void _deleteBeach(BuildContext context, int index) {
+    final viewModel = context.read<PlayasViewModel>();
+    viewModel.deleteBeach(index);
+    _showFeedback(context);
   }
 
-  Future<void> _confirmDeleteAll() async {
-    if (_beaches.isEmpty) {
+  Future<void> _confirmDeleteAll(BuildContext context) async {
+    final viewModel = context.read<PlayasViewModel>();
+    if (viewModel.beaches.isEmpty) {
       return;
     }
 
     // La confirmación evita borrar la lista con un toque accidental.
     final shouldDelete = await showDialog<bool>(
       context: context,
-      builder: (context) => const _DeleteAllDialog(),
+      builder: (context) => const DeleteAllDialog(),
     );
 
-    if (!mounted || shouldDelete != true) {
-      return;
+    if (context.mounted && shouldDelete == true) {
+      viewModel.deleteAllBeaches();
+      _showFeedback(context);
     }
+  }
 
-    setState(() => _beaches.clear());
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Se han borrado todas las playas')),
-    );
+  void _showFeedback(BuildContext context) {
+    final viewModel = context.read<PlayasViewModel>();
+    final message = viewModel.feedbackMessage;
+    if (message != null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(message)),
+      );
+      viewModel.clearFeedback();
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    final viewModel = context.watch<PlayasViewModel>();
+    final beaches = viewModel.beaches;
+
     return Scaffold(
       backgroundColor: _surface,
       drawer: const AppDrawer(),
@@ -178,7 +148,7 @@ class _CrudPlayasPageState extends State<CrudPlayasPage> {
                               ),
                             ),
                             Badge(
-                              label: Text('${_beaches.length}'),
+                              label: Text('${beaches.length}'),
                               backgroundColor: _orange,
                               textColor: Colors.white,
                               child: const Icon(
@@ -190,15 +160,17 @@ class _CrudPlayasPageState extends State<CrudPlayasPage> {
                           ],
                         ),
                         const SizedBox(height: 8),
-                        Text(
+                        const Text(
                           'Organiza tus playas favoritas y consulta su estado.',
                           style: TextStyle(
-                            color: Colors.white.withValues(alpha: 0.88),
+                            color: Colors.white,
                           ),
                         ),
                         const SizedBox(height: 16),
                         OutlinedButton.icon(
-                          onPressed: _beaches.isEmpty ? null : _confirmDeleteAll,
+                          onPressed: beaches.isEmpty
+                              ? null
+                              : () => _confirmDeleteAll(context),
                           icon: const Icon(Icons.delete_sweep_outlined),
                           label: const Text('Borrar toda la lista'),
                           style: OutlinedButton.styleFrom(
@@ -213,13 +185,13 @@ class _CrudPlayasPageState extends State<CrudPlayasPage> {
               ),
             ),
             Expanded(
-              child: _beaches.isEmpty
+              child: beaches.isEmpty
                   ? const _EmptyBeachesMessage()
                   : ListView.builder(
                       padding: const EdgeInsets.fromLTRB(16, 8, 16, 96),
-                      itemCount: _beaches.length,
+                      itemCount: beaches.length,
                       itemBuilder: (context, index) {
-                        final beach = _beaches[index];
+                        final beach = beaches[index];
                         return Card(
                           margin: const EdgeInsets.only(bottom: 12),
                           clipBehavior: Clip.antiAlias,
@@ -274,7 +246,7 @@ class _CrudPlayasPageState extends State<CrudPlayasPage> {
                             ),
                             isThreeLine: true,
                             trailing: IconButton(
-                              onPressed: () => _deleteBeach(index),
+                              onPressed: () => _deleteBeach(context, index),
                               tooltip: 'Borrar ${beach.name}',
                               color: _orange,
                               icon: const Icon(Icons.delete_outline),
@@ -288,7 +260,7 @@ class _CrudPlayasPageState extends State<CrudPlayasPage> {
         ),
       ),
       floatingActionButton: FloatingActionButton.extended(
-        onPressed: _showAddBeachDialog,
+        onPressed: () => _showAddBeachDialog(context),
         backgroundColor: _orange,
         foregroundColor: Colors.white,
         icon: const Icon(Icons.add),
@@ -322,334 +294,6 @@ class _EmptyBeachesMessage extends StatelessWidget {
           ],
         ),
       ),
-    );
-  }
-}
-
-class _AddBeachDialog extends StatefulWidget {
-  const _AddBeachDialog();
-
-  @override
-  State<_AddBeachDialog> createState() => _AddBeachDialogState();
-}
-
-class _AddBeachDialogState extends State<_AddBeachDialog> {
-  final _formKey = GlobalKey<FormState>();
-  final _nameController = TextEditingController();
-  final _descriptionController = TextEditingController();
-  final _imageUrlController = TextEditingController();
-  final _peopleController = TextEditingController(text: '0');
-  final _picker = ImagePicker();
-  String _category = beachCategories.first;
-  bool _isClean = true;
-  Uint8List? _imageBytes;
-  String? _selectedImageName;
-
-  @override
-  void dispose() {
-    _nameController.dispose();
-    _descriptionController.dispose();
-    _imageUrlController.dispose();
-    _peopleController.dispose();
-    super.dispose();
-  }
-
-  void _save() {
-    if (!_formKey.currentState!.validate()) {
-      return;
-    }
-
-    Navigator.of(context).pop(
-      Beach(
-        name: _nameController.text.trim(),
-        description: _descriptionController.text.trim(),
-        category: _category,
-        imageUrl: _imageUrlController.text.trim(),
-        imageBytes: _imageBytes,
-        isClean: _isClean,
-        approximatePeople: int.parse(_peopleController.text.trim()),
-      ),
-    );
-  }
-
-  Future<void> _pickImage() async {
-    try {
-      final pickedFile = await _picker.pickImage(
-        source: ImageSource.gallery,
-        maxWidth: 2048,
-        maxHeight: 2048,
-        imageQuality: 85,
-        requestFullMetadata: false,
-      );
-
-      if (pickedFile == null) {
-        return;
-      }
-
-      // Se trabajan los bytes en memoria: nunca se ejecuta ni se reutiliza
-      // como ruta un archivo elegido por el usuario.
-      final bytes = await pickedFile.readAsBytes();
-      if (bytes.length > 10 * 1024 * 1024) {
-        _showImageError('La imagen no puede superar los 10 MB.');
-        return;
-      }
-
-      if (!_isSupportedRasterImage(bytes)) {
-        _showImageError('Solo se aceptan imágenes JPEG, PNG o WebP.');
-        return;
-      }
-
-      if (!mounted) {
-        return;
-      }
-
-      setState(() {
-        _imageBytes = bytes;
-        _selectedImageName = pickedFile.name;
-        _imageUrlController.clear();
-      });
-    } on PlatformException {
-      _showImageError('No se pudo abrir el selector de imágenes.');
-    } on Exception {
-      _showImageError('No se pudo leer la imagen seleccionada.');
-    }
-  }
-
-  bool _isSupportedRasterImage(Uint8List bytes) {
-    // La extensión y el MIME del selector no son suficientes: comprobamos la
-    // firma del contenido para permitir solo formatos raster conocidos.
-    final isJpeg = bytes.length >= 3 &&
-        bytes[0] == 0xFF &&
-        bytes[1] == 0xD8 &&
-        bytes[2] == 0xFF;
-    final isPng = bytes.length >= 8 &&
-        bytes[0] == 0x89 &&
-        bytes[1] == 0x50 &&
-        bytes[2] == 0x4E &&
-        bytes[3] == 0x47 &&
-        bytes[4] == 0x0D &&
-        bytes[5] == 0x0A &&
-        bytes[6] == 0x1A &&
-        bytes[7] == 0x0A;
-    final isWebp = bytes.length >= 12 &&
-        String.fromCharCodes(bytes.sublist(0, 4)) == 'RIFF' &&
-        String.fromCharCodes(bytes.sublist(8, 12)) == 'WEBP';
-    return isJpeg || isPng || isWebp;
-  }
-
-  void _showImageError(String message) {
-    if (!mounted) {
-      return;
-    }
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return AlertDialog(
-      title: const Text('Añadir playa'),
-      content: Form(
-        key: _formKey,
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextFormField(
-                controller: _nameController,
-                autofocus: true,
-                textCapitalization: TextCapitalization.sentences,
-                decoration: const InputDecoration(
-                  labelText: 'Nombre',
-                  prefixIcon: Icon(Icons.title),
-                ),
-                validator: (value) => value == null || value.trim().isEmpty
-                    ? 'Escribe un nombre'
-                    : null,
-              ),
-              const SizedBox(height: 12),
-              TextFormField(
-                controller: _descriptionController,
-                textCapitalization: TextCapitalization.sentences,
-                maxLength: 120,
-                maxLines: 2,
-                decoration: const InputDecoration(
-                  labelText: 'Descripción breve',
-                  prefixIcon: Icon(Icons.notes),
-                ),
-                validator: (value) => value == null || value.trim().isEmpty
-                    ? 'Escribe una descripción'
-                    : null,
-              ),
-              const SizedBox(height: 4),
-              DropdownButtonFormField<String>(
-                initialValue: _category,
-                decoration: const InputDecoration(
-                  labelText: 'Categoría',
-                  prefixIcon: Icon(Icons.category_outlined),
-                ),
-                items: beachCategories
-                    .map(
-                      (category) => DropdownMenuItem(
-                        value: category,
-                        child: Text(category),
-                      ),
-                    )
-                    .toList(),
-                onChanged: (value) {
-                  if (value != null) {
-                    setState(() => _category = value);
-                  }
-                },
-              ),
-              const SizedBox(height: 12),
-              TextFormField(
-                controller: _imageUrlController,
-                keyboardType: TextInputType.url,
-                onChanged: (value) {
-                  if (value.isNotEmpty && _imageBytes != null) {
-                    setState(() {
-                      _imageBytes = null;
-                      _selectedImageName = null;
-                    });
-                  }
-                },
-                decoration: const InputDecoration(
-                  labelText: 'URL de imagen (opcional)',
-                  hintText: 'https://ejemplo.com/playa.jpg',
-                  prefixIcon: Icon(Icons.image_outlined),
-                ),
-                validator: (value) {
-                  final url = value?.trim() ?? '';
-                  if (url.isNotEmpty &&
-                      !url.startsWith('https://')) {
-                    return 'La URL debe comenzar por https://';
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 8),
-              OutlinedButton.icon(
-                onPressed: _pickImage,
-                icon: const Icon(Icons.upload_file),
-                label: Text(
-                  _selectedImageName == null
-                      ? 'Seleccionar imagen del dispositivo'
-                      : 'Imagen seleccionada',
-                ),
-              ),
-              if (_selectedImageName != null) ...[
-                const SizedBox(height: 6),
-                Text(
-                  'Archivo validado: $_selectedImageName',
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: Theme.of(context).textTheme.bodySmall,
-                ),
-              ],
-              const SizedBox(height: 12),
-              TextFormField(
-                controller: _peopleController,
-                keyboardType: TextInputType.number,
-                decoration: const InputDecoration(
-                  labelText: 'Personas aproximadas',
-                  prefixIcon: Icon(Icons.people_outline),
-                ),
-                validator: (value) {
-                  final people = int.tryParse(value?.trim() ?? '');
-                  if (people == null || people < 0) {
-                    return 'Indica un número igual o mayor que 0';
-                  }
-                  return null;
-                },
-              ),
-              CheckboxListTile(
-                contentPadding: EdgeInsets.zero,
-                title: const Text('La playa está limpia'),
-                value: _isClean,
-                onChanged: (value) {
-                  setState(() => _isClean = value ?? false);
-                },
-                controlAffinity: ListTileControlAffinity.leading,
-              ),
-            ],
-          ),
-        ),
-      ),
-      actions: [
-        TextButton(
-          onPressed: () => Navigator.of(context).pop(),
-          child: const Text('Cancelar'),
-        ),
-        FilledButton.icon(
-          onPressed: _save,
-          icon: const Icon(Icons.check),
-          label: const Text('Guardar'),
-        ),
-      ],
-    );
-  }
-}
-
-class _DeleteAllDialog extends StatefulWidget {
-  const _DeleteAllDialog();
-
-  @override
-  State<_DeleteAllDialog> createState() => _DeleteAllDialogState();
-}
-
-class _DeleteAllDialogState extends State<_DeleteAllDialog> {
-  static const _waitDuration = 10;
-  static const _orange = Color(0xFFC9502B);
-  Timer? _timer;
-  int _secondsRemaining = _waitDuration;
-
-  @override
-  void initState() {
-    super.initState();
-    _timer = Timer.periodic(const Duration(seconds: 1), (_) {
-      if (_secondsRemaining <= 1) {
-        _timer?.cancel();
-        if (mounted) {
-          setState(() => _secondsRemaining = 0);
-        }
-      } else if (mounted) {
-        setState(() => _secondsRemaining--);
-      }
-    });
-  }
-
-  @override
-  void dispose() {
-    _timer?.cancel();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final canDelete = _secondsRemaining == 0;
-
-    return AlertDialog(
-      icon: const Icon(Icons.warning_amber_rounded, color: _orange, size: 42),
-      title: const Text('¿Borrar todas las playas?'),
-      content: Text(
-        'Esta acción eliminará todas las playas guardadas y no se puede deshacer.\n\n'
-        'Por seguridad, el botón se activará en $_secondsRemaining segundos.',
-        textAlign: TextAlign.center,
-      ),
-      actions: [
-        TextButton(
-          onPressed: () => Navigator.of(context).pop(false),
-          child: const Text('Cancelar'),
-        ),
-        FilledButton.icon(
-          onPressed: canDelete ? () => Navigator.of(context).pop(true) : null,
-          icon: const Icon(Icons.delete_forever),
-          label: Text(
-            canDelete ? 'Borrar todo' : 'Esperar ($_secondsRemaining)',
-          ),
-          style: FilledButton.styleFrom(backgroundColor: _orange),
-        ),
-      ],
     );
   }
 }
