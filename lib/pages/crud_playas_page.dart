@@ -7,6 +7,8 @@ import '../models/beach.dart';
 import '../viewmodels/playas_viewmodel.dart';
 import '../widgets/add_beach_dialog.dart';
 import '../widgets/app_drawer.dart';
+import '../widgets/beach_list_item.dart';
+import '../widgets/beaches_summary_card.dart';
 import '../widgets/delete_all_dialog.dart';
 
 /// Pantalla principal para consultar, crear y borrar playas.
@@ -30,11 +32,6 @@ class _CrudPlayasView extends StatelessWidget {
   static const _teal = Color(0xFF2A9D8F);
   static const _orange = Color(0xFFC9502B);
   static const _surface = Color(0xFFF4F8F7);
-
-  String _fallbackImageForCategory(String category) => switch (category) {
-    'Playa urbana' || 'Playa familiar' => 'assets/images/home_bg.jpg',
-    _ => 'assets/images/Sandi_proto.jpg',
-  };
 
   Future<void> _showAddBeachDialog(BuildContext context) async {
     final viewModel = context.read<PlayasViewModel>();
@@ -112,76 +109,9 @@ class _CrudPlayasView extends StatelessWidget {
           children: [
             Padding(
               padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
-              child: Card(
-                elevation: 3,
-                clipBehavior: Clip.antiAlias,
-                child: Padding(
-                  padding: EdgeInsets.zero,
-                  child: Container(
-                    decoration: const BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [_teal, Color(0xFF237A70)],
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                      ),
-                    ),
-                    padding: const EdgeInsets.all(18),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            const Icon(
-                              Icons.beach_access,
-                              color: Colors.white,
-                              size: 32,
-                            ),
-                            const SizedBox(width: 12),
-                            const Expanded(
-                              child: Text(
-                                'Playas guardadas',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
-                            Badge(
-                              label: Text('${beaches.length}'),
-                              backgroundColor: _orange,
-                              textColor: Colors.white,
-                              child: const Icon(
-                                Icons.location_on_outlined,
-                                color: Colors.white,
-                                size: 28,
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 8),
-                        const Text(
-                          'Organiza tus playas favoritas y consulta su estado.',
-                          style: TextStyle(
-                            color: Colors.white,
-                          ),
-                        ),
-                        const SizedBox(height: 16),
-                        OutlinedButton.icon(
-                          onPressed: beaches.isEmpty
-                              ? null
-                              : () => _confirmDeleteAll(context),
-                          icon: const Icon(Icons.delete_sweep_outlined),
-                          label: const Text('Borrar toda la lista'),
-                          style: OutlinedButton.styleFrom(
-                            foregroundColor: Colors.white,
-                            side: const BorderSide(color: Colors.white70),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
+              child: BeachesSummaryCard(
+                beachCount: beaches.length,
+                onDeleteAll: beaches.isEmpty ? null : () => _confirmDeleteAll(context),
               ),
             ),
             Expanded(
@@ -192,66 +122,10 @@ class _CrudPlayasView extends StatelessWidget {
                       itemCount: beaches.length,
                       itemBuilder: (context, index) {
                         final beach = beaches[index];
-                        return Card(
-                          margin: const EdgeInsets.only(bottom: 12),
-                          clipBehavior: Clip.antiAlias,
-                          child: ListTile(
-                            contentPadding: const EdgeInsets.all(10),
-                            leading: ClipRRect(
-                              borderRadius: BorderRadius.circular(10),
-                              child: beach.imageBytes != null
-                                  ? Image.memory(
-                                      beach.imageBytes!,
-                                      width: 68,
-                                      height: 68,
-                                      fit: BoxFit.cover,
-                                    )
-                                  : beach.imageUrl.isEmpty
-                                  ? Image.asset(
-                                      _fallbackImageForCategory(beach.category),
-                                      width: 68,
-                                      height: 68,
-                                      fit: BoxFit.cover,
-                                    )
-                                  : Image.network(
-                                      beach.imageUrl,
-                                      width: 68,
-                                      height: 68,
-                                      fit: BoxFit.cover,
-                                      errorBuilder: (context, error, stackTrace) =>
-                                          Image.asset(
-                                        _fallbackImageForCategory(
-                                          beach.category,
-                                        ),
-                                        width: 68,
-                                        height: 68,
-                                        fit: BoxFit.cover,
-                                      ),
-                              ),
-                            ),
-                            title: Text(
-                              beach.name,
-                              style: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            subtitle: Padding(
-                              padding: const EdgeInsets.only(top: 5),
-                              child: Text(
-                                '${beach.description}\n'
-                                'Categoría: ${beach.category} · '
-                                '${beach.isClean ? 'Limpia' : 'Pendiente de limpieza'}\n'
-                                'Aforo aproximado: ${beach.approximatePeople} personas',
-                              ),
-                            ),
-                            isThreeLine: true,
-                            trailing: IconButton(
-                              onPressed: () => _deleteBeach(context, index),
-                              tooltip: 'Borrar ${beach.name}',
-                              color: _orange,
-                              icon: const Icon(Icons.delete_outline),
-                            ),
-                          ),
+                        return BeachListItem(
+                          beach: beach,
+                          onDelete: () => _deleteBeach(context, index),
+                          deleteButtonColor: _orange,
                         );
                       },
                     ),
