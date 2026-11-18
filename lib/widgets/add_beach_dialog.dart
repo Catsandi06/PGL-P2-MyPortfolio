@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../models/beach.dart';
+import '../utils/image_validator.dart';
 
 /// Diálogo para crear una nueva playa con validaciones de formulario.
 class AddBeachDialog extends StatefulWidget {
@@ -70,13 +71,18 @@ class _AddBeachDialogState extends State<AddBeachDialog> {
       // Se trabajan los bytes en memoria: nunca se ejecuta ni se reutiliza
       // como ruta un archivo elegido por el usuario.
       final bytes = await pickedFile.readAsBytes();
-      if (bytes.length > 10 * 1024 * 1024) {
-        _showImageError('La imagen no puede superar los 10 MB.');
+
+      // Validar tamaño
+      final sizeError = ImageValidator.validateSize(bytes.length);
+      if (sizeError != null) {
+        _showImageError(sizeError);
         return;
       }
 
-      if (!_isSupportedRasterImage(bytes)) {
-        _showImageError('Solo se aceptan imágenes JPEG, PNG o WebP.');
+      // Validar formato
+      final formatError = ImageValidator.validateFormat(bytes);
+      if (formatError != null) {
+        _showImageError(formatError);
         return;
       }
 
@@ -94,28 +100,6 @@ class _AddBeachDialogState extends State<AddBeachDialog> {
     } on Exception {
       _showImageError('No se pudo leer la imagen seleccionada.');
     }
-  }
-
-  bool _isSupportedRasterImage(Uint8List bytes) {
-    // La extensión y el MIME del selector no son suficientes: comprobamos la
-    // firma del contenido para permitir solo formatos raster conocidos.
-    final isJpeg = bytes.length >= 3 &&
-        bytes[0] == 0xFF &&
-        bytes[1] == 0xD8 &&
-        bytes[2] == 0xFF;
-    final isPng = bytes.length >= 8 &&
-        bytes[0] == 0x89 &&
-        bytes[1] == 0x50 &&
-        bytes[2] == 0x4E &&
-        bytes[3] == 0x47 &&
-        bytes[4] == 0x0D &&
-        bytes[5] == 0x0A &&
-        bytes[6] == 0x1A &&
-        bytes[7] == 0x0A;
-    final isWebp = bytes.length >= 12 &&
-        String.fromCharCodes(bytes.sublist(0, 4)) == 'RIFF' &&
-        String.fromCharCodes(bytes.sublist(8, 12)) == 'WEBP';
-    return isJpeg || isPng || isWebp;
   }
 
   void _showImageError(String message) {
@@ -201,8 +185,7 @@ class _AddBeachDialogState extends State<AddBeachDialog> {
                 ),
                 validator: (value) {
                   final url = value?.trim() ?? '';
-                  if (url.isNotEmpty &&
-                      !url.startsWith('https://')) {
+                  if (url.isNotEmpty && !url.startsWith('https://')) {
                     return 'La URL debe comenzar por https://';
                   }
                   return null;
