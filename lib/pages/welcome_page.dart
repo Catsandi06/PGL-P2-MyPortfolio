@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../widgets/app_drawer.dart';
+import '../widgets/welcome_message_button.dart';
 
 class WelcomePage extends StatelessWidget {
   const WelcomePage({super.key});
@@ -177,6 +178,8 @@ class WelcomePage extends StatelessWidget {
                           ),
                         ),
                       ),
+                      const SizedBox(height: 12),
+                      const WelcomeMessageButton(),
                     ],
                   ),
                 ),
