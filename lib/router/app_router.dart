@@ -23,18 +23,17 @@ final appRouter = GoRouter(
   redirect: (context, state) async {
     final path = state.uri.path;
     
-    // Si ya está en login o register, no redirigir
-    if (path == '/login' || path == '/register') return null;
-    
-    // Verificar si el usuario está autenticado
+    // La pantalla de registro es siempre accesible
+    if (path == '/register') return null;
+
     final authenticated = await _isAuthenticated();
-    
-    // Si no está autenticado, redirigir a login
-    if (!authenticated) return '/login';
-    
-    // Si está autenticado y intenta acceder a login, redirigir a bienvenida
+
+    // Sin token válido solo se puede ver login
+    if (!authenticated) return path == '/login' ? null : '/login';
+
+    // Con token válido, login redirige a bienvenida
     if (path == '/login') return '/bienvenida';
-    
+
     return null;
   },
   routes: [

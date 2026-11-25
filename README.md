@@ -212,6 +212,38 @@ documentan los cambios agrupados por versión. Para publicar una nueva versión:
 | Añadir playa               | Modal con formulario, selector de categoría, imagen, aforo y limpieza           |
 | Borrar toda la lista       | Confirmación y cuenta atrás de seguridad antes de eliminar                      |
 
+## Sesión de usuario (Tarea 5)
+
+La app usa la API `https://my-users-api.onrender.com/users` (JWT) con las
+pantallas de registro y login, el token guardado con `flutter_secure_storage`,
+comprobación del token al arrancar (si es válido va a Bienvenida), cierre de
+sesión desde el Drawer y un botón en Bienvenida que muestra el mensaje de
+`/welcome`. Las peticiones están encapsuladas en `lib/services/`.
+
+### Pruebas realizadas
+
+| Prueba                | Petición                        | Resultado                                                        |
+|-----------------------|---------------------------------|------------------------------------------------------------------|
+| Registro exitoso      | `POST /register`                | 201 - Usuario registrado con éxito                               |
+| Login fallido         | `POST /login` (contraseña errónea) | 401 - Credenciales de usuario incorrectas                        |
+| Login exitoso         | `POST /login`                   | 200 - Inicio de sesión exitoso; token guardado y acceso a Bienvenida |
+| Token válido          | `GET /check-token`              | 200 - Token validado para acceder a la aplicación                |
+| Mensaje de bienvenida | `GET /welcome`                  | 200 - ¡Bienvenido a la aplicación, Nichel!                       |
+
+### Capturas de las pruebas
+
+Las capturas muestran la interfaz Flutter ejecutada con Flutter Web en un
+viewport de móvil de 412 × 915 px; no se tomaron en un dispositivo Android
+físico. Los mensajes de registro, login y bienvenida corresponden a respuestas
+reales de la API.
+
+<div style="margin: 5px">
+  <img src="docs/screenshots/registro_exitoso.png" width="200" alt="Alerta de registro exitoso" />
+  <img src="docs/screenshots/login_fallido.png" width="200" alt="Alerta de login fallido" />
+  <img src="docs/screenshots/login_exitoso.png" width="200" alt="Login exitoso en la pantalla de Bienvenida" />
+  <img src="docs/screenshots/mensaje_bienvenida.png" width="200" alt="Respuesta del endpoint de bienvenida" />
+</div>
+
 ## Instalación y ejecución
 
 ### Requisitos previos
