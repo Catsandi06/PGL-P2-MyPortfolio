@@ -5,19 +5,19 @@ import 'package:flutter/material.dart';
 class BeachesSummaryCard extends StatelessWidget {
   /// Número de playas guardadas.
   final int beachCount;
-  
+
   /// Acción para borrar todas las playas.
   final VoidCallback? onDeleteAll;
-  
+
   /// Color principal del gradiente.
   final Color primaryColor;
-  
+
   /// Color secundario del gradiente.
   final Color secondaryColor;
-  
+
   /// Color de acento para el badge.
   final Color accentColor;
-  
+
   const BeachesSummaryCard({
     super.key,
     required this.beachCount,
@@ -26,7 +26,7 @@ class BeachesSummaryCard extends StatelessWidget {
     this.secondaryColor = const Color(0xFF237A70),
     this.accentColor = const Color(0xFFC9502B),
   });
-  
+
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -48,11 +48,7 @@ class BeachesSummaryCard extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  const Icon(
-                    Icons.beach_access,
-                    color: Colors.white,
-                    size: 32,
-                  ),
+                  const Icon(Icons.beach_access, color: Colors.white, size: 32),
                   const SizedBox(width: 12),
                   const Expanded(
                     child: Text(
@@ -79,9 +75,7 @@ class BeachesSummaryCard extends StatelessWidget {
               const SizedBox(height: 8),
               const Text(
                 'Organiza tus playas favoritas y consulta su estado.',
-                style: TextStyle(
-                  color: Colors.white,
-                ),
+                style: TextStyle(color: Colors.white),
               ),
               const SizedBox(height: 16),
               OutlinedButton.icon(

@@ -8,20 +8,20 @@ import 'beach_image_widget.dart';
 class BeachListItem extends StatelessWidget {
   /// Playa a mostrar.
   final Beach beach;
-  
+
   /// Acción para borrar esta playa.
   final VoidCallback onDelete;
-  
+
   /// Color del botón de borrar.
   final Color deleteButtonColor;
-  
+
   const BeachListItem({
     super.key,
     required this.beach,
     required this.onDelete,
     this.deleteButtonColor = const Color(0xFFC9502B),
   });
-  
+
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -36,9 +36,7 @@ class BeachListItem extends StatelessWidget {
         ),
         title: Text(
           beach.name,
-          style: const TextStyle(
-            fontWeight: FontWeight.bold,
-          ),
+          style: const TextStyle(fontWeight: FontWeight.bold),
         ),
         subtitle: Padding(
           padding: const EdgeInsets.only(top: 5),

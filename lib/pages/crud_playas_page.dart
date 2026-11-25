@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -10,6 +8,7 @@ import '../widgets/app_drawer.dart';
 import '../widgets/beach_list_item.dart';
 import '../widgets/beaches_summary_card.dart';
 import '../widgets/delete_all_dialog.dart';
+import '../widgets/empty_beaches_message.dart';
 
 /// Pantalla principal para consultar, crear y borrar playas.
 /// Esta es solo la View: consume el ViewModel a través de ChangeNotifierProvider
@@ -35,7 +34,7 @@ class _CrudPlayasView extends StatelessWidget {
 
   Future<void> _showAddBeachDialog(BuildContext context) async {
     final viewModel = context.read<PlayasViewModel>();
-    
+
     // El diálogo devuelve la playa mediante Navigator.pop cuando el formulario
     // supera todas sus validaciones.
     final newBeach = await showDialog<Beach>(
@@ -77,9 +76,8 @@ class _CrudPlayasView extends StatelessWidget {
     final viewModel = context.read<PlayasViewModel>();
     final message = viewModel.feedbackMessage;
     if (message != null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(message)),
-      );
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(message)));
       viewModel.clearFeedback();
     }
   }
@@ -111,12 +109,14 @@ class _CrudPlayasView extends StatelessWidget {
               padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
               child: BeachesSummaryCard(
                 beachCount: beaches.length,
-                onDeleteAll: beaches.isEmpty ? null : () => _confirmDeleteAll(context),
+                onDeleteAll: beaches.isEmpty
+                    ? null
+                    : () => _confirmDeleteAll(context),
               ),
             ),
             Expanded(
               child: beaches.isEmpty
-                  ? const _EmptyBeachesMessage()
+                  ? const EmptyBeachesMessage()
                   : ListView.builder(
                       padding: const EdgeInsets.fromLTRB(16, 8, 16, 96),
                       itemCount: beaches.length,
@@ -139,34 +139,6 @@ class _CrudPlayasView extends StatelessWidget {
         foregroundColor: Colors.white,
         icon: const Icon(Icons.add),
         label: const Text('Añadir playa'),
-      ),
-    );
-  }
-}
-
-class _EmptyBeachesMessage extends StatelessWidget {
-  const _EmptyBeachesMessage();
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(32),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(
-              Icons.inbox_outlined,
-              size: 64,
-              color: Theme.of(context).colorScheme.primary,
-            ),
-            const SizedBox(height: 12),
-            const Text(
-              'No hay playas todavía.\nPulsa «Añadir playa» para crear una.',
-              textAlign: TextAlign.center,
-            ),
-          ],
-        ),
       ),
     );
   }
