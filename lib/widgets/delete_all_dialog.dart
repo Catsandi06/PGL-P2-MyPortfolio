@@ -2,8 +2,8 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
-/// Diálogo para confirmar la eliminación de todas las playas.
-/// Incluye un temporizador de seguridad que deshabilita el botón
+/// Diálogo de confirmación para borrar todas las playas.
+/// Incluye un temporizador de seguridad que deshabilita el botón de confirmación
 /// durante 10 segundos para evitar borrados accidentales.
 class DeleteAllDialog extends StatefulWidget {
   const DeleteAllDialog({super.key});

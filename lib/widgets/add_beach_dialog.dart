@@ -5,9 +5,7 @@ import 'package:image_picker/image_picker.dart';
 import '../models/beach.dart';
 import '../utils/image_validator.dart';
 
-/// Diálogo para añadir una nueva playa al CRUD.
-/// Valida nombre, descripción, URL de imagen (opcional), imagen del dispositivo,
-/// número de personas y estado de limpieza.
+/// Diálogo para crear una nueva playa con validaciones de formulario.
 class AddBeachDialog extends StatefulWidget {
   const AddBeachDialog({super.key});
 
@@ -71,13 +69,18 @@ class _AddBeachDialogState extends State<AddBeachDialog> {
       // Se trabajan los bytes en memoria: nunca se ejecuta ni se reutiliza
       // como ruta un archivo elegido por el usuario.
       final bytes = await pickedFile.readAsBytes();
-      if (!ImageValidator.isWithinSizeLimit(bytes.length)) {
-        _showImageError('La imagen no puede superar los 10 MB.');
+
+      // Validar tamaño
+      final sizeError = ImageValidator.validateSize(bytes.length);
+      if (sizeError != null) {
+        _showImageError(sizeError);
         return;
       }
 
-      if (!ImageValidator.isSupportedRasterImage(bytes)) {
-        _showImageError('Solo se aceptan imágenes JPEG, PNG o WebP.');
+      // Validar formato
+      final formatError = ImageValidator.validateFormat(bytes);
+      if (formatError != null) {
+        _showImageError(formatError);
         return;
       }
 
@@ -101,7 +104,8 @@ class _AddBeachDialogState extends State<AddBeachDialog> {
     if (!mounted) {
       return;
     }
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
+    ScaffoldMessenger.of(context)
+        .showSnackBar(SnackBar(content: Text(message)));
   }
 
   @override
@@ -180,8 +184,7 @@ class _AddBeachDialogState extends State<AddBeachDialog> {
                 ),
                 validator: (value) {
                   final url = value?.trim() ?? '';
-                  if (url.isNotEmpty &&
-                      !url.startsWith('https://')) {
+                  if (url.isNotEmpty && !url.startsWith('https://')) {
                     return 'La URL debe comenzar por https://';
                   }
                   return null;
